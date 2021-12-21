@@ -525,14 +525,17 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   text-align: center;
-  background: #004850;
+  background: -webkit-gradient(linear, left top, left bottom, from(#004850), to(rgba(0, 72, 80, 0.1)));
+  background: linear-gradient(#004850, rgba(0, 72, 80, 0.1));
+  -webkit-box-shadow: 0px 0px 5px 3px rgba(17, 17, 17, 0.15);
+          box-shadow: 0px 0px 5px 3px rgba(17, 17, 17, 0.15);
+  cursor: pointer;
   color: #fff;
   font-size: 14px;
-  text-transform: uppercase;
   letter-spacing: 1px;
   padding: 5px 5px;
   text-align: center;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .Game__bttn.hide {
@@ -542,7 +545,8 @@ body {
 .Game__bttn--save {
   line-height: 1.3;
   width: 100%;
-  background: #790f99;
+  background: -webkit-gradient(linear, left top, left bottom, from(#790f99), to(rgba(121, 15, 153, 0.1)));
+  background: linear-gradient(#790f99, rgba(121, 15, 153, 0.1));
 }
 
 .Game__start {
@@ -564,15 +568,21 @@ body {
 
 .Game__start h1 {
   border-left: 5px solid #790f99;
-  padding-left: 15px;
   margin-bottom: 0;
-  font-weight: 400;
+  font-size: 40px;
+  line-height: 1;
+  padding: 4px 0px;
+  padding-left: 15px;
+  margin-top: 10px;
 }
 
 .Game__start h3 {
+  padding: 4px 0px;
   border-left: 5px solid #004850;
   padding-left: 15px;
   font-weight: 300;
+  font-size: 24px;
+  line-height: 1;
 }
 
 .Game__start.hide {
@@ -930,14 +940,17 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   text-align: center;
-  background: #004850;
+  background: -webkit-gradient(linear, left top, left bottom, from(#004850), to(rgba(0, 72, 80, 0.1)));
+  background: linear-gradient(#004850, rgba(0, 72, 80, 0.1));
+  -webkit-box-shadow: 0px 0px 5px 3px rgba(17, 17, 17, 0.15);
+          box-shadow: 0px 0px 5px 3px rgba(17, 17, 17, 0.15);
   color: #fff;
   font-size: 14px;
-  text-transform: uppercase;
   letter-spacing: 1px;
   padding: 7px 15px;
   text-align: center;
-  font-weight: 200;
+  font-weight: 300;
+  border-radius: 5px;
 }
 
 .startBox {
@@ -982,5 +995,121 @@ body {
   -webkit-transform: translate(-50%, -50%) scale(8);
           transform: translate(-50%, -50%) scale(8);
   z-index: 10;
+}
+
+.aniLogo {
+  width: 50vw;
+  max-width: 256px;
+  aspect-ratio: 1/1;
+  position: relative;
+  margin: 0px auto;
+}
+
+@media (max-width: 325px) {
+  .aniLogo {
+    width: 40vw;
+  }
+}
+
+.aniLogo::after {
+  opacity: 1;
+  -webkit-transition: opacity ease-in 0.3s;
+  transition: opacity ease-in 0.3s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  background: no-repeat center / contain;
+  -webkit-animation: aniLogoAfter infinite 30s 0s ease-in-out;
+          animation: aniLogoAfter infinite 30s 0s ease-in-out;
+}
+
+@-webkit-keyframes aniLogoAfter {
+  0% {
+    background-image: url("../images/items/tree.png");
+  }
+  9% {
+    background-image: url("../images/items/balls-1.png");
+  }
+  17% {
+    background-image: url("../images/items/nybear-3.png");
+  }
+  25% {
+    background-image: url("../images/items/nybear-1.png");
+  }
+  34% {
+    background-image: url("../images/items/balls-3.png");
+  }
+  42% {
+    background-image: url("../images/items/nybear-2.png");
+  }
+  51% {
+    background-image: url("../images/items/balls-2.png");
+  }
+  59% {
+    background-image: url("../images/items/pizza-1.png");
+  }
+  67% {
+    background-image: url("../images/items/balls-4.png");
+  }
+  75% {
+    background-image: url("../images/items/pizza-2.png");
+  }
+  84% {
+    background-image: url("../images/items/cocktail.png");
+  }
+  92% {
+    background-image: url("../images/items/shot.png");
+  }
+  100% {
+    background-image: url("../images/items/shot.png");
+  }
+}
+
+@keyframes aniLogoAfter {
+  0% {
+    background-image: url("../images/items/tree.png");
+  }
+  9% {
+    background-image: url("../images/items/balls-1.png");
+  }
+  17% {
+    background-image: url("../images/items/nybear-3.png");
+  }
+  25% {
+    background-image: url("../images/items/nybear-1.png");
+  }
+  34% {
+    background-image: url("../images/items/balls-3.png");
+  }
+  42% {
+    background-image: url("../images/items/nybear-2.png");
+  }
+  51% {
+    background-image: url("../images/items/balls-2.png");
+  }
+  59% {
+    background-image: url("../images/items/pizza-1.png");
+  }
+  67% {
+    background-image: url("../images/items/balls-4.png");
+  }
+  75% {
+    background-image: url("../images/items/pizza-2.png");
+  }
+  84% {
+    background-image: url("../images/items/cocktail.png");
+  }
+  92% {
+    background-image: url("../images/items/shot.png");
+  }
+  100% {
+    background-image: url("../images/items/shot.png");
+  }
 }
 /*# sourceMappingURL=style.css.map */

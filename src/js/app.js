@@ -520,4 +520,10 @@ window.addEventListener(`load`, () => {
 		}
 	});
 
+	const animatePoint = (count) => {
+		for (let index = 0; index < 100; index = index + (100 / count)) {
+			console.log(Math.ceil(index));
+		}
+	}
+	// animatePoint(12);
 });

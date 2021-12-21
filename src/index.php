@@ -35,14 +35,14 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 	if (isset($_GET['load'])) {
 		$DB->qf_array("SELECT * FROM `results` ORDER BY `score` DESC LIMIT 100");
 	} else {
-		if (isset($_POST['save'])) {
-			$score = $DB->es($_COOKIE['score']);
-			$instagram = $DB->es($_COOKIE['instagram']);
-			$date = $DB->es(date('Y-m-d H:i:s'));
-			$ip = $DB->es(getIP());
-			$SQL = "INSERT INTO `results` (`instagram`, `score`, `date`, `ip`) VALUES ('{$instagram}', '{$score}', '{$date}', '{$ip}')";
-			$DB->q($SQL);
-		}
+		// if (isset($_POST['save'])) {
+		$score = $DB->es($_COOKIE['score']);
+		$instagram = $DB->es($_COOKIE['instagram']);
+		$date = $DB->es(date('Y-m-d H:i:s'));
+		$ip = $DB->es(getIP());
+		$SQL = "INSERT INTO `results` (`instagram`, `score`, `date`, `ip`) VALUES ('{$instagram}', '{$score}', '{$date}', '{$ip}')";
+		$DB->q($SQL);
+		// }
 	}
 
 	echo json($DB->rD());
@@ -158,8 +158,9 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 		<section class="Game__start flex flex--fdc flex--aic flex--jcc flex--fwn">
 			<div>
 				<div class="startBox startBox--show" id='startText'>
-					<h1>ИГРА В МИШЕЛЯ</h1>
-					<h3>Почти как КВН, но только лучше!</h3>
+					<div class="aniLogo"></div>
+					<h1>ИГРА В&nbsp;МИШЕЛЯ</h1>
+					<h3>Почти как КВН, <br>но только лучше!</h3>
 					<br>
 					<p>Привет, мой друг!<br>Совсем скоро уже наступит новый год и поэтому мы решили немного поиграть с вами в игры.</p>
 					<a href="#" class="startBox__toggler Bttn">Читать инструкцию >></a>
@@ -228,6 +229,28 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 			<div class="Footer__creator">Created by <a href="//instagram.com/stiven.kolenz" data-href="instagram://user?username=stiven.kolenz" target="_blank" class="Footer__link HeadSocs__link--instagram">GFWE.Team</a></div>
 		</div>
 	</footer>
+	<!-- Yandex.Metrika counter -->
+	<script type="text/javascript">
+		(function(m, e, t, r, i, k, a) {
+			m[i] = m[i] || function() {
+				(m[i].a = m[i].a || []).push(arguments)
+			};
+			m[i].l = 1 * new Date();
+			k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+		})
+		(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+		ym(51323302, "init", {
+			clickmap: true,
+			trackLinks: true,
+			accurateTrackBounce: true,
+			webvisor: true
+		});
+	</script>
+	<noscript>
+		<div><img src="https://mc.yandex.ru/watch/51323302" style="position:absolute; left:-9999px;" alt="" /></div>
+	</noscript>
+	<!-- /Yandex.Metrika counter -->
 </body>
 
 </html>
