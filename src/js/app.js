@@ -415,7 +415,7 @@ window.addEventListener(`load`, () => {
 		}
 
 		async #loadResults() {
-			let response = await fetch('/result/load/');
+			let response = await fetch('https://gfwe.ru/mishkabar/game/');
 			this.#results = await response.json();
 			this.#genResults();
 		}
@@ -465,15 +465,14 @@ window.addEventListener(`load`, () => {
 			Cookie.set('instagram', fd.get(`instagram`));
 			this.#panels.form.reset();
 
-			let response = await fetch('/result/', {
+			let response = await fetch('https://gfwe.ru/mishkabar/game/', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
-				},
-				body: JSON.stringify({ save: true })
+				body: fd
+				// body: JSON.stringify(data)
+				// body: data
 			});
 			let result = await response.json();
-			console.log(result);
+			// console.log(result);
 			if (result) {
 				this.#openResults();
 			} else {
@@ -534,5 +533,5 @@ window.addEventListener(`load`, () => {
 			console.log(Math.ceil(index));
 		}
 	}
-	// animatePoint(12);
+
 });
