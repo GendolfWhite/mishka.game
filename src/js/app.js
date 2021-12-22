@@ -117,8 +117,8 @@ window.addEventListener(`load`, () => {
 	}
 
 	class Game {
-		_results = null;
-		_panels = {
+		#results = null;
+		#panels = {
 			field: null,
 			bttns: null,
 			timer: null,
@@ -128,121 +128,121 @@ window.addEventListener(`load`, () => {
 			form: null,
 			results: null,
 		}
-		_addItemCount = 100; // кол-во итемов для добавления в тик по умолчанию
-		_randomAddCount = true; // Включить геннерацию рандомного числла для добавления новы итемов в тик.
-		_randAddCountMin = 5;
-		_randAddCountMax = 15;
-		_intervalIds = {
+		#addItemCount = 10; // кол-во итемов для добавления в тик по умолчанию
+		#randomAddCount = true; // Включить геннерацию рандомного числла для добавления новы итемов в тик.
+		#randAddCountMin = 5;
+		#randAddCountMax = 15;
+		#intervalIds = {
 			autoAdd: null,
 			autoClear: null,
 			timer: null,
 		}
-		_autoAddInterval = 1; // sec
-		_startItemsCount = 15;
-		_maxItemCountOnField = 300;
-		_bonusStickers = [4, 11, 13];
-		_stickerBonusCount = 2;
-		_itemMinScale = 1.5;
-		_itemMaxScale = 2.5;
-		_gameDuration = 5; // сек
-		_currentTime = 0;
-		_score = 0;
-		_generatedItemCount = {
+		#autoAddInterval = 1; // sec
+		#startItemsCount = 15;
+		#maxItemCountOnField = 300;
+		#bonusStickers = [4, 11, 13];
+		#stickerBonusCount = 2;
+		#itemMinScale = 1.5;
+		#itemMaxScale = 2.5;
+		#gameDuration = 5; // сек
+		#currentTime = 0;
+		#score = 0;
+		#generatedItemCount = {
 			all: 0,
 		};
-		_itemsCount = 0;
-		_proportion = {};
-		_items = [
+		#itemsCount = 0;
+		#proportion = {};
+		#items = [
 			{ name: "Виски-кола", proportion: 15, className: 'cocktail', addBonus: true }, { name: "Лимончело", proportion: 15, className: 'shot', addBonus: true }, { name: "Медведь в новогодней шапке", proportion: 15, className: 'nybear', addBonus: true }, { name: "Ёлочные шары", proportion: 15, className: 'balls', addBonus: true }, { name: "Ёлка", proportion: 15, className: 'tree', addBonus: true }, { name: "Стикеры из телеги", proportion: 60, className: 'sticker', addBonus: false, }, { name: "Пицца", proportion: 15, className: 'pizza', addBonus: true },
 		];
 
-		randInt(min, max, float = false) {
+		#randInt(min, max, float = false) {
 			return (float ? Math.random() * (max - min) + min : Math.floor(Math.random() * (max - min) + min));
 		}
 
-		randColor() {
-			return `rgba(${this.randInt(0, 255)}, ${this.randInt(0, 255)}, ${this.randInt(0, 255)}, 1)`;
+		#randColor() {
+			return `rgba(${this.#randInt(0, 255)}, ${this.#randInt(0, 255)}, ${this.#randInt(0, 255)}, 1)`;
 		}
 
 		constructor(gameDuration = false) {
 			if (gameDuration)
-				this._gameDuration = gameDuration;
-			this.loadElements();
-			this.events();
+				this.#gameDuration = gameDuration;
+			this.#loadElements();
+			this.#events();
 		}
 
-		resetStats(global = true) {
-			this._itemsCount = 0;
+		#resetStats(global = true) {
+			this.#itemsCount = 0;
 			if (global)
-				this._generatedItemCount = { all: 0 };
-			this._proportion = {};
+				this.#generatedItemCount = { all: 0 };
+			this.#proportion = {};
 		}
 
-		updateStats(item) {
+		#updateStats(item) {
 			let attr = (item.tagName == 'DIV' ? item.getAttribute(`data-type`) : item.className);
-			this._itemsCount++;
-			this._proportion[attr].count++;
-			this._proportion[attr].rate = this.proportion(this._itemsCount, this._proportion[attr].count);
+			this.#itemsCount++;
+			this.#proportion[attr].count++;
+			this.#proportion[attr].rate = this.#calcProportion(this.#itemsCount, this.#proportion[attr].count);
 
-			this._generatedItemCount.all++;
-			if (typeof this._generatedItemCount[attr] == 'undefined')
-				this._generatedItemCount[attr] = 0;
-			this._generatedItemCount[attr]++;
+			this.#generatedItemCount.all++;
+			if (typeof this.#generatedItemCount[attr] == 'undefined')
+				this.#generatedItemCount[attr] = 0;
+			this.#generatedItemCount[attr]++;
 		}
 
-		proportion(all, current) {
+		#calcProportion(all, current) {
 			return current * 100 / all;
 		}
 
-		itemsProportions(item) {
+		#itemsProportions(item) {
 			let attr = (item.tagName == 'DIV' ? item.getAttribute(`data-type`) : item.className);
 
-			if (typeof this._proportion[attr] == 'undefined')
-				this._proportion[attr] = { count: 0, rate: 0 };
+			if (typeof this.#proportion[attr] == 'undefined')
+				this.#proportion[attr] = { count: 0, rate: 0 };
 
-			if (this.proportion(this._itemsCount + 1, this._proportion[attr].count + 1) >= item.proportion) {
+			if (this.#calcProportion(this.#itemsCount + 1, this.#proportion[attr].count + 1) >= item.proportion) {
 				return false;
 			} else {
 				return item;
 			}
 		}
 
-		removeOldItems() {
+		#removeOldItems() {
 			// console.log('removeOldItems');
-			this.resetStats(false);
-			let i = this._maxItemCountOnField / 2;
-			for (const item of this._panels.field.querySelectorAll(`*`)) {
+			this.#resetStats(false);
+			let i = this.#maxItemCountOnField / 2;
+			for (const item of this.#panels.field.querySelectorAll(`*`)) {
 				if (i > 0) {
-					this.addBonus(item, true);
+					this.#addBonus(item, true);
 				} else {
-					this.itemsProportions(item);
-					this.updateStats(item);
+					this.#itemsProportions(item);
+					this.#updateStats(item);
 				}
 				i--;
 			}
 		}
 
-		getPrototypeItem() {
+		#getPrototypeItem() {
 			let item = false;
 
-			if (this._startItemsCount > this._itemsCount) {
-				item = this._items[this.randInt(0, this._items.length - 1)];
-				this.itemsProportions(item);
+			if (this.#startItemsCount > this.#itemsCount) {
+				item = this.#items[this.#randInt(0, this.#items.length - 1)];
+				this.#itemsProportions(item);
 			} else {
 				while (item == false) {
-					item = this.itemsProportions(this._items[this.randInt(0, this._items.length - 1)]);
+					item = this.#itemsProportions(this.#items[this.#randInt(0, this.#items.length - 1)]);
 				}
 			}
 
-			this.updateStats(item);
+			this.#updateStats(item);
 
-			if (this._maxItemCountOnField < this._itemsCount)
-				this.removeOldItems();
+			if (this.#maxItemCountOnField < this.#itemsCount)
+				this.#removeOldItems();
 			return item;
 		}
 
-		genItem() {
-			let prototype = this.getPrototypeItem();
+		#genItem() {
+			let prototype = this.#getPrototypeItem();
 
 			let item = document.createElement('div');
 			item.setAttribute('data-type', prototype.className);
@@ -252,218 +252,218 @@ window.addEventListener(`load`, () => {
 			if (prototype.addBonus === true)
 				item.classList.add('bonus');
 			if (prototype.className == 'nybear')
-				item.classList.add('Game__item--' + prototype.className + `--` + this.randInt(1, 3));
+				item.classList.add('Game__item--' + prototype.className + `--` + this.#randInt(1, 3));
 			if (prototype.className == 'pizza')
-				item.classList.add('Game__item--' + prototype.className + `--` + this.randInt(1, 2));
+				item.classList.add('Game__item--' + prototype.className + `--` + this.#randInt(1, 2));
 			if (prototype.className == 'balls')
-				item.classList.add('Game__item--' + prototype.className + `--` + this.randInt(1, 4));
+				item.classList.add('Game__item--' + prototype.className + `--` + this.#randInt(1, 4));
 			if (prototype.className == 'sticker') {
-				let id = this.randInt(1, 16);
+				let id = this.#randInt(1, 16);
 				item.classList.add('Game__item--' + prototype.className + `--` + id);
-				if (this._bonusStickers.includes(id)) // Бонусные стикеры>
+				if (this.#bonusStickers.includes(id)) // Бонусные стикеры>
 					item.classList.add('bonus', `sticker`);
 			}
-			item.style.top = this.randInt(0, 100) + '%';
-			item.style.left = this.randInt(0, 100) + '%';
-			item.style.transform = `translate(-50%, -50%) rotate(${this.randInt(0, 359)}deg) scale(${randInt(this._itemMinScale, this._itemMaxScale, 1)})`;
+			item.style.top = this.#randInt(0, 100) + '%';
+			item.style.left = this.#randInt(0, 100) + '%';
+			item.style.transform = `translate(-50%, -50%) rotate(${this.#randInt(0, 359)}deg) scale(${this.#randInt(this.#itemMinScale, this.#itemMaxScale, 1)})`;
 
 			return item;
 		}
 
-		addMoreItems(start = false) {
-			for (let index = (start ? this._startItemsCount : (this._randomAddCount ? this.randInt(this._randAddCountMin, this._randAddCountMax) : this._addItemCount)); index > 0; index--) {
-				let item = this.genItem();
+		#addMoreItems(start = false) {
+			for (let index = (start ? this.#startItemsCount : (this.#randomAddCount ? this.#randInt(this.#randAddCountMin, this.#randAddCountMax) : this.#addItemCount)); index > 0; index--) {
+				let item = this.#genItem();
 				setTimeout(() => {
-					this._panels.field.append(item);
+					this.#panels.field.append(item);
 					setTimeout(() => {
 						item.classList.remove(`new`);
 					}, 50);
-				}, this.randInt(150, 1500));
+				}, this.#randInt(150, 1500));
 			}
 		}
 
-		clearField() {
-			for (const el of this._panels.field.querySelectorAll(`*`))
+		#clearField() {
+			for (const el of this.#panels.field.querySelectorAll(`*`))
 				el.remove();
 		}
 
-		autoAdd() {
-			this._intervalIds.autoAdd = setInterval(() => {
-				this.addMoreItems();
-			}, this._autoAddInterval * 1000);
+		#autoAdd() {
+			this.#intervalIds.autoAdd = setInterval(() => {
+				this.#addMoreItems();
+			}, this.#autoAddInterval * 1000);
 		}
 
-		autoClearClicked() {
-			this._intervalIds.autoClear = setInterval(() => {
-				for (const item of this._panels.field.querySelectorAll(`.clicked`))
+		#autoClearClicked() {
+			this.#intervalIds.autoClear = setInterval(() => {
+				for (const item of this.#panels.field.querySelectorAll(`.clicked`))
 					item.remove();
 			}, 1000);
 		}
 
-		setTimerVal() {
-			let min = Math.floor(this._currentTime / 60);
-			let sec = this._currentTime - (min * 60)
-			this._panels.timer.querySelector(`b`).innerText = `${min}:` + (sec < 10 ? '0' + sec : sec);
+		#setTimerVal() {
+			let min = Math.floor(this.#currentTime / 60);
+			let sec = this.#currentTime - (min * 60)
+			this.#panels.timer.querySelector(`b`).innerText = `${min}:` + (sec < 10 ? '0' + sec : sec);
 		}
 
-		timer() {
-			this._currentTime = this._gameDuration;
-			this.setTimerVal();
-			this._intervalIds.timer = setInterval(() => {
-				this._currentTime--;
-				this.setTimerVal();
-				if (this._currentTime == 0)
+		#timer() {
+			this.#currentTime = this.#gameDuration;
+			this.#setTimerVal();
+			this.#intervalIds.timer = setInterval(() => {
+				this.#currentTime--;
+				this.#setTimerVal();
+				if (this.#currentTime == 0)
 					this.stop();
 				if (test)
-					this.consoleProportion();
+					this.#consoleProportion();
 			}, 1000);
 		}
 
-		consoleProportion() {
+		#consoleProportion() {
 			let str = [];
-			for (const key in this._proportion) {
-				str.push(`[${this._proportion[key].count}/${this._generatedItemCount[key]}] ${key} - ${this._proportion[key].rate}`);
+			for (const key in this.#proportion) {
+				str.push(`[${this.#proportion[key].count}/${this.#generatedItemCount[key]}] ${key} - ${this.#proportion[key].rate}`);
 			}
 			console.log(str.join("\n"));
 
-			console.log(`generatedItemCount	=>	` + this._generatedItemCount.all);
-			console.log(`itemsCount	=>	` + this._itemsCount);
+			console.log(`generatedItemCount	=>	` + this.#generatedItemCount.all);
+			console.log(`itemsCount	=>	` + this.#itemsCount);
 		}
 
-		stopIntervals() {
-			for (const key in this._intervalIds)
-				clearInterval(this._intervalIds[key]);
+		#stopIntervals() {
+			for (const key in this.#intervalIds)
+				clearInterval(this.#intervalIds[key]);
 		}
 
-		clear_Score() {
-			this._score = 0;
-			this.refresh_Score();
+		#clear_Score() {
+			this.#score = 0;
+			this.#refresh_Score();
 		}
 
-		togglePanel(panel, show = false) {
+		#togglePanel(panel, show = false) {
 			if (show) {
-				this._panels[panel].classList.remove('hide');
+				this.#panels[panel].classList.remove('hide');
 			} else {
-				this._panels[panel].classList.add('hide');
+				this.#panels[panel].classList.add('hide');
 			}
 		}
 
-		refresh_Score() {
-			this._panels.info.querySelector(`b`).innerText = this._score;
+		#refresh_Score() {
+			this.#panels.info.querySelector(`b`).innerText = this.#score;
 		}
 
 		start() {
-			this.clearField();
-			this.clear_Score();
-			this.togglePanel('bttns');
-			this.togglePanel('timer', 1);
-			this.togglePanel('info', 1);
-			this.togglePanel('field', 1);
-			this.togglePanel('start');
-			this.togglePanel('end');
-			this.addMoreItems(true);
-			this.timer();
-			this.autoAdd();
-			this.autoClearClicked();
+			this.#clearField();
+			this.#clear_Score();
+			this.#togglePanel('bttns');
+			this.#togglePanel('timer', 1);
+			this.#togglePanel('info', 1);
+			this.#togglePanel('field', 1);
+			this.#togglePanel('start');
+			this.#togglePanel('end');
+			this.#addMoreItems(true);
+			this.#timer();
+			this.#autoAdd();
+			this.#autoClearClicked();
 		}
 
 		stop() {
-			this.stopIntervals();
-			this.clearField();
-			this.togglePanel('bttns', 1);
-			this.togglePanel('timer', 0);
-			this.togglePanel('info', 0);
-			this.togglePanel('field', 0);
-			this.togglePanel('start', 0);
-			this.togglePanel('bttnSave', 1);
-			this.togglePanel('bttnStart', 0);
-			this.togglePanel('bttnRestart', 1);
-			this.resetStats();
+			this.#stopIntervals();
+			this.#clearField();
+			this.#togglePanel('bttns', 1);
+			this.#togglePanel('timer', 0);
+			this.#togglePanel('info', 0);
+			this.#togglePanel('field', 0);
+			this.#togglePanel('start', 0);
+			this.#togglePanel('bttnSave', 1);
+			this.#togglePanel('bttnStart', 0);
+			this.#togglePanel('bttnRestart', 1);
+			this.#resetStats();
 
-			this.setEndResult();
-			this.togglePanel('end', 1);
+			this.#setEndResult();
+			this.#togglePanel('end', 1);
 		}
 
-		setEndResult() {
-			this._panels.end.querySelector(`b`).innerText = this._score;
-			this._panels.end.querySelector(`input[name='score']`).value = this._score;
+		#setEndResult() {
+			this.#panels.end.querySelector(`b`).innerText = this.#score;
+			this.#panels.end.querySelector(`input[name='score']`).value = this.#score;
 		}
 
-		loadElements() {
-			this._panels.field = document.querySelector(`.Game__field`);
-			this._panels.bttns = document.querySelector(`.Game__bttns`);
-			this._panels.info = document.querySelector(`.Game__info`);
-			this._panels.timer = document.querySelector(`.Game__timer`);
-			this._panels.start = document.querySelector(`.Game__start`);
-			this._panels.end = document.querySelector(`.Game__end`);
-			this._panels.bttnSave = document.querySelector(`.Game__bttn--save`);
-			this._panels.bttnRestart = document.querySelector(`.Game__bttn--restart`);
-			this._panels.bttnStart = document.querySelector(`.Game__bttn--start`);
-			this._panels.bttnResults = document.querySelector(`.Game__bttn--results`);
-			this._panels.form = document.querySelector(`.Game__save`);
-			this._panels.results = document.querySelector(`.Game__results`);
-			this._panels.results = document.querySelector(`.Game__results`);
-			this._panels.tbody = this._panels.results.querySelector('tbody');
+		#loadElements() {
+			this.#panels.field = document.querySelector(`.Game__field`);
+			this.#panels.bttns = document.querySelector(`.Game__bttns`);
+			this.#panels.info = document.querySelector(`.Game__info`);
+			this.#panels.timer = document.querySelector(`.Game__timer`);
+			this.#panels.start = document.querySelector(`.Game__start`);
+			this.#panels.end = document.querySelector(`.Game__end`);
+			this.#panels.bttnSave = document.querySelector(`.Game__bttn--save`);
+			this.#panels.bttnRestart = document.querySelector(`.Game__bttn--restart`);
+			this.#panels.bttnStart = document.querySelector(`.Game__bttn--start`);
+			this.#panels.bttnResults = document.querySelector(`.Game__bttn--results`);
+			this.#panels.form = document.querySelector(`.Game__save`);
+			this.#panels.results = document.querySelector(`.Game__results`);
+			this.#panels.results = document.querySelector(`.Game__results`);
+			this.#panels.tbody = this.#panels.results.querySelector('tbody');
 
 		}
 
-		addBonus(item, noBonus = false) {
+		#addBonus(item, noBonus = false) {
 			item.classList.add(`clicked`);
 			if (item.classList.contains(`bonus`) && !noBonus) {
-				this._score += (item.classList.contains(`sticker`) ? this._stickerBonusCount : 1);
+				this.#score += (item.classList.contains(`sticker`) ? this.#stickerBonusCount : 1);
 			}
 		}
 
-		async loadResults() {
+		async #loadResults() {
 			let response = await fetch('/result/load/');
-			this._results = await response.json();
-			this.genResults();
+			this.#results = await response.json();
+			this.#genResults();
 		}
 
-		genTd(text = '') {
+		#genTd(text = '') {
 			let td = document.createElement('td');
 			td.innerText = text;
 			return td;
 		}
 
-		genTr(id, date, instagram, score) {
+		#genTr(id, date, instagram, score) {
 			let tr = document.createElement('tr');
 			if (Cookie.get('instagram') == instagram)
 				tr.classList.add('you');
 			tr.setAttribute('data-id', id);
 			tr.setAttribute('data-date', date);
-			tr.append(this.genTd());
-			// tr.append(this.genTd(date));
-			tr.append(this.genTd(instagram));
-			tr.append(this.genTd(score));
+			tr.append(this.#genTd());
+			// tr.append(this.#genTd(date));
+			tr.append(this.#genTd(instagram));
+			tr.append(this.#genTd(score));
 			return tr;
 		}
 
-		clearResults() {
-			this._panels.tbody.innerHTML = '';
+		#clearResults() {
+			this.#panels.tbody.innerHTML = '';
 		}
 
-		genResults() {
-			this.clearResults();
-			for (const res of this._results) {
-				this._panels.tbody.append(this.genTr(res.id, res.date, res.instagram, res.score));
+		#genResults() {
+			this.#clearResults();
+			for (const res of this.#results) {
+				this.#panels.tbody.append(this.#genTr(res.id, res.date, res.instagram, res.score));
 			}
 		}
 
-		openResults(openEnd = false) {
+		#openResults(openEnd = false) {
 			if (!openEnd) {
-				this.togglePanel('start', 1);
-				this.togglePanel('end');
+				this.#togglePanel('start', 1);
+				this.#togglePanel('end');
 			}
-			this.togglePanel('results', 1);
-			this.loadResults();
+			this.#togglePanel('results', 1);
+			this.#loadResults();
 		}
 
-		async saveResult() {
-			const fd = new FormData(this._panels.form);
+		async #saveResult() {
+			const fd = new FormData(this.#panels.form);
 			Cookie.set('score', fd.get(`score`));
 			Cookie.set('instagram', fd.get(`instagram`));
-			this._panels.form.reset();
+			this.#panels.form.reset();
 
 			let response = await fetch('/result/', {
 				method: 'POST',
@@ -475,42 +475,42 @@ window.addEventListener(`load`, () => {
 			let result = await response.json();
 			console.log(result);
 			if (result) {
-				this.openResults();
+				this.#openResults();
 			} else {
 				alert(`Произошла ошибка при сохранении: (`);
 			}
 			// console.log(result);
 		}
 
-		events() {
-			this._panels.bttnRestart.addEventListener(`click`, (e) => {
+		#events() {
+			this.#panels.bttnRestart.addEventListener(`click`, (e) => {
 				e.preventDefault();
 				this.start();
 			});
-			this._panels.bttnStart.addEventListener(`click`, (e) => {
+			this.#panels.bttnStart.addEventListener(`click`, (e) => {
 				e.preventDefault();
 				this.start();
 				toggleFullScreen();
 			});
 
-			this._panels.field.addEventListener(`click`, (e) => {
-				this.addBonus(e.target);
-				this.refresh_Score();
+			this.#panels.field.addEventListener(`click`, (e) => {
+				this.#addBonus(e.target);
+				this.#refresh_Score();
 			});
 
-			this._panels.form.addEventListener(`submit`, (e) => {
+			this.#panels.form.addEventListener(`submit`, (e) => {
 				e.preventDefault();
-				this.saveResult();
+				this.#saveResult();
 			});
 
-			this._panels.bttnResults.addEventListener(`click`, (e) => {
+			this.#panels.bttnResults.addEventListener(`click`, (e) => {
 				e.preventDefault();
-				this.openResults();
+				this.#openResults();
 			});
 
-			this._panels.results.querySelector(`.Bttn`).addEventListener(`click`, (e) => {
+			this.#panels.results.querySelector(`.Bttn`).addEventListener(`click`, (e) => {
 				e.preventDefault();
-				this.togglePanel('results');
+				this.#togglePanel('results');
 			});
 		}
 	}
