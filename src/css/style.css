@@ -683,8 +683,8 @@ body {
   background-color: unset !important;
   font-size: 0px;
   opacity: 1;
-  -webkit-transition: opacity ease-out 1s;
-  transition: opacity ease-out 1s;
+  -webkit-transition: all ease-out 1s;
+  transition: all ease-out 1s;
 }
 
 .Game__item.small {
@@ -705,14 +705,15 @@ body {
 }
 
 .Game__item.clicked {
-  opacity: 0;
-  -webkit-transition: opacity linear 0.1s;
-  transition: opacity linear 0.1s;
+  -webkit-transition: all linear 0.2s;
+  transition: all linear 0.2s;
   pointer-events: none;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  -webkit-transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
+          transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
 }
 
 .Game__item--cocktail {

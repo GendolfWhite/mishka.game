@@ -533,7 +533,7 @@ body {
 		background-color: unset !important;
 		font-size: 0px;
 		opacity: 1;
-		transition: opacity ease-out 1s;
+		transition: all ease-out 1s;
 		&.small {
 			width: 40px;
 			height: 40px;
@@ -547,10 +547,11 @@ body {
 			opacity: 0;
 		}
 		&.clicked {
-			opacity: 0;
-			transition: opacity linear 0.1s;
+			// opacity: 0;
+			transition: all linear 0.2s;
 			pointer-events: none;
 			user-select: none;
+			transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
 		}
 		// .Game__item--cocktail
 		&--cocktail {
