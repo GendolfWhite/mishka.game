@@ -1,4 +1,13 @@
 "use strict";
+if ("serviceWorker" in navigator) {
+	self.addEventListener("load", async () => {
+		const container = navigator.serviceWorker;
+		if (container.controller === null) {
+			const reg = await container.register("sw.js");
+		}
+	});
+}
+// console.log(navigator);
 const Cookie = {
 	set: function (name, value, options = {}) {
 		options = { path: '/', ...options };

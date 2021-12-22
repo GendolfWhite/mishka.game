@@ -8,8 +8,15 @@
 	"theme_color": "#004850",
 	"dir": "ltr",
 	"display": "fullscreen",
-	"orientation": "landscape",
+	"orientation": "portrait-primary",
+	"prefer_related_applications": false,
 	"icons": [
+		{
+			"src": "/images/manifest/android-icon-512x512.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "any maskable"
+		},
 		{
 			"src": "/images/manifest/android-icon-192x192.png",
 			"type": "image/png",
