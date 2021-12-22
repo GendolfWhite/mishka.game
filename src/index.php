@@ -69,6 +69,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 	<meta name="site-created" content="20.12.2021">
 
 	<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+	<!-- <meta http-equiv="Content-Security-Policy" content="default-src https:; connect-src https:; font-src https: data:; frame-src https: twitter:; frame-ancestors https:; img-src https: data:; media-src https:; object-src https:; script-src 'unsafe-inline' 'unsafe-eval' https:; style-src 'unsafe-inline' https:;"> -->
 
 	<link rel="canonical" href="https://игра.мишкабар.рф/" />
 	<meta property="og:locale" content="ru_RU" />
@@ -118,16 +119,18 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 </head>
 
 <body class="Preloader flex flex--fdc flex--aic flex--jcs">
-	<a href="/" class="Logotype Preloader__logotype flex flex--aic flex--jcc"><img src="/images/logotypeIco.png" alt="" class="Logotype__icon"><img src="/images/logotypeText.png" alt="" class="Logotype__text"></a>
+	<div href="/" class="Logotype Preloader__logotype flex flex--aic flex--jcc"><img src="/images/logotypeIco.png" alt="" class="Logotype__icon"><img src="/images/logotypeText.png" alt="" class="Logotype__text"></div>
 	<header class="Head">
 		<div class="Head__wrap wrap flex flex--aic flex--jcc">
-			<a href="/" class="Head__logotype Logotype flex flex--aic flex--jcc">
+			<a href="/" class="Head__logotype Logotype flex flex--aic flex--jcc" title="МишкаБар">
+				<span>МишкаБар</span>
 				<img src="/images/logotypeIco.png" alt="" class="Logotype__icon">
 				<img src="/images/logotypeText.png" alt="" class="Logotype__text">
 			</a>
 			<div class="Head__socs HeadSocs flex flex--aic flex--jcc">
 				<div class="HeadSocs__item">
-					<a href="https://www.instagram.com/mishka_tsk/" data-href="instagram://user?username=mishka_tsk" target="_blank" class="HeadSocs__link HeadSocs__link--instagram">
+					<a href="https://www.instagram.com/mishka_tsk/" data-href="instagram://user?username=mishka_tsk" target="_blank" rel="noopener" class="HeadSocs__link HeadSocs__link--instagram" title='Instagram'>
+						<span>instagram</span>
 						<svg class="HeadSocs__icon" viewBox="0 0 58 58">
 							<g>
 								<path d="M28.2,16.7c-7,0-12.8,5.7-12.8,12.8s5.7,12.8,12.8,12.8S41,36.5,41,29.5S35.2,16.7,28.2,16.7z M28.2,37.7 c-4.5,0-8.2-3.7-8.2-8.2s3.7-8.2,8.2-8.2s8.2,3.7,8.2,8.2S32.7,37.7,28.2,37.7z" />
@@ -139,7 +142,8 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 					</a>
 				</div>
 				<div class="HeadSocs__item">
-					<a href="https://t.me/mishka_tsk" data-href="tg://resolve?domain=mishka_tsk" target="_blank" class="HeadSocs__link HeadSocs__link--telegram">
+					<a href="https://t.me/mishka_tsk" data-href="tg://resolve?domain=mishka_tsk" target="_blank" rel="noopener" class="HeadSocs__link HeadSocs__link--telegram" title='Telegram'>
+						<span>telegram</span>
 						<svg class="HeadSocs__icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 							<path d="M24.19,27.11a1,1,0,0,1-.58-.18L14,20.19a1,1,0,0,1-.42-.73,1,1,0,0,1,.29-.8L16.49,16,12,18.81l2,4.59.88-.88a1,1,0,0,1,1.42,1.41L14.3,25.85a1,1,0,0,1-1.63-.31L9.78,18.8a1,1,0,0,1,.4-1.24L22.7,9.85a1,1,0,0,1,1.23,1.56l-7.82,7.82,7.44,5.22,4-17L5.78,15.55l2.41,1a1,1,0,1,1-.75,1.85L2.63,16.45a1,1,0,0,1,0-1.87L28.65,5a1,1,0,0,1,1,.19,1,1,0,0,1,.31,1L25.16,26.34a1,1,0,0,1-.62.71A1.07,1.07,0,0,1,24.19,27.11Z" />
 						</svg>
@@ -162,7 +166,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 				<div class="startBox startBox--show" id='startText'>
 					<div class="aniLogo"></div>
 					<h1>ИГРА В&nbsp;МИШЕЛЯ</h1>
-					<h3>Почти как КВН, <br>но только лучше!</h3>
+					<h2>Почти как КВН, <br>но только лучше!</h2>
 					<br>
 					<p>Привет, мой друг!<br>Совсем скоро уже наступит новый год и поэтому мы решили немного поиграть с вами в игры.</p>
 					<a href="#" class="startBox__toggler Bttn">Читать инструкцию >></a>
@@ -227,12 +231,12 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 	</main>
 	<footer class="Footer">
 		<div class="Footer__wrap wrap flex flex--aistr flex--jcc">
-			<div class="Footer__copy"><a href="//МишкаБар.рф">МишкаБар.рф</a> ©&nbsp;2021</div>
-			<div class="Footer__creator">Created by <a href="//instagram.com/stiven.kolenz" data-href="instagram://user?username=stiven.kolenz" target="_blank" class="Footer__link HeadSocs__link--instagram">GFWE.Team</a></div>
+			<div class="Footer__copy"><a href="//МишкаБар.рф" rel="noopener">МишкаБар.рф</a> ©&nbsp;2021</div>
+			<div class="Footer__creator">Created by <a href="//instagram.com/stiven.kolenz" data-href="instagram://user?username=stiven.kolenz" target="_blank" rel="noopener" class="Footer__link HeadSocs__link--instagram">GFWE.Team</a></div>
 		</div>
 	</footer>
 	<!-- Yandex.Metrika counter -->
-	<script type="text/javascript">
+	<!-- <script type="text/javascript">
 		(function(m, e, t, r, i, k, a) {
 			m[i] = m[i] || function() {
 				(m[i].a = m[i].a || []).push(arguments)
@@ -251,7 +255,7 @@ if (isset($_GET['act']) && $_GET['act'] == 'result') {
 	</script>
 	<noscript>
 		<div><img src="https://mc.yandex.ru/watch/51323302" style="position:absolute; left:-9999px;" alt="" /></div>
-	</noscript>
+	</noscript> -->
 	<!-- /Yandex.Metrika counter -->
 </body>
 

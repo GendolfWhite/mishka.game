@@ -3,7 +3,7 @@
 	"name": "Игра.МишкаБар.рф",
 	"lang": "ru",
 	"description": "Почти как КВН, но только лучше!",
-	"start_url": "/",
+	"start_url": ".",
 	"background_color": "#004850",
 	"theme_color": "#004850",
 	"dir": "ltr",

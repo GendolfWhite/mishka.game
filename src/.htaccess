@@ -9,3 +9,4 @@ RewriteEngine On
 
 RewriteRule ^result(/?)$ index.php?act=result [L,QSA]
 RewriteRule ^result/load(/?)$ index.php?act=result&load=last [L,QSA]
+RewriteRule ^(.*?).webp(/?)$ $1.png [L,QSA]

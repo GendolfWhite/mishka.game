@@ -101,7 +101,7 @@ window.addEventListener(`load`, () => {
 			setTimeout(() => {
 				Preloader.classList.add('Preloader--loaded');
 			}, (test ? testDuration : 500));
-		}, (test ? testDuration : 1000));
+		}, (test ? testDuration : 500));
 	}
 
 	preloader();

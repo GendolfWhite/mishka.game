@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url("https://cdn.jsdelivr.net/npm/reseter.css");
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=block");
 /**  Стили скролбара - старт */
 /* ::-webkit-scrollbar {
 	width: 6px;
@@ -384,6 +384,15 @@ body {
   }
 }
 
+.Logotype {
+  font-size: 0px;
+  color: rgba(121, 15, 153, 0);
+}
+
+.Logotype span {
+  display: none;
+}
+
 .Logotype__icon {
   display: block;
   width: 50%;
@@ -407,6 +416,10 @@ body {
 .HeadSocs__link:hover {
   -webkit-transform: rotate(15deg);
           transform: rotate(15deg);
+}
+
+.HeadSocs__link span {
+  display: none;
 }
 
 .HeadSocs__icon {
@@ -576,7 +589,7 @@ body {
   margin-top: 10px;
 }
 
-.Game__start h3 {
+.Game__start h2 {
   padding: 4px 0px;
   border-left: 5px solid #004850;
   padding-left: 15px;
@@ -703,51 +716,51 @@ body {
 }
 
 .Game__item--cocktail {
-  background-image: url("../images/items/cocktail.png");
+  background-image: url("../images/items/cocktail.webp");
 }
 
 .Game__item--shot {
-  background-image: url("../images/items/shot.png");
+  background-image: url("../images/items/shot.webp");
 }
 
 .Game__item--nybear--1 {
-  background-image: url("../images/items/nybear-1.png");
+  background-image: url("../images/items/nybear-1.webp");
 }
 
 .Game__item--nybear--2 {
-  background-image: url("../images/items/nybear-2.png");
+  background-image: url("../images/items/nybear-2.webp");
 }
 
 .Game__item--nybear--3 {
-  background-image: url("../images/items/nybear-3.png");
+  background-image: url("../images/items/nybear-3.webp");
 }
 
 .Game__item--balls--1 {
-  background-image: url("../images/items/balls-1.png");
+  background-image: url("../images/items/balls-1.webp");
 }
 
 .Game__item--balls--2 {
-  background-image: url("../images/items/balls-2.png");
+  background-image: url("../images/items/balls-2.webp");
 }
 
 .Game__item--balls--3 {
-  background-image: url("../images/items/balls-3.png");
+  background-image: url("../images/items/balls-3.webp");
 }
 
 .Game__item--balls--4 {
-  background-image: url("../images/items/balls-4.png");
+  background-image: url("../images/items/balls-4.webp");
 }
 
 .Game__item--tree {
-  background-image: url("../images/items/tree.png");
+  background-image: url("../images/items/tree.webp");
 }
 
 .Game__item--pizza--1 {
-  background-image: url("../images/items/pizza-1.png");
+  background-image: url("../images/items/pizza-1.webp");
 }
 
 .Game__item--pizza--2 {
-  background-image: url("../images/items/pizza-2.png");
+  background-image: url("../images/items/pizza-2.webp");
 }
 
 .Game__item--sticker--1 {
@@ -1031,85 +1044,85 @@ body {
 
 @-webkit-keyframes aniLogoAfter {
   0% {
-    background-image: url("../images/items/tree.png");
+    background-image: url("../images/items/tree.webp");
   }
   9% {
-    background-image: url("../images/items/balls-1.png");
+    background-image: url("../images/items/balls-1.webp");
   }
   17% {
-    background-image: url("../images/items/nybear-3.png");
+    background-image: url("../images/items/nybear-3.webp");
   }
   25% {
-    background-image: url("../images/items/nybear-1.png");
+    background-image: url("../images/items/nybear-1.webp");
   }
   34% {
-    background-image: url("../images/items/balls-3.png");
+    background-image: url("../images/items/balls-3.webp");
   }
   42% {
-    background-image: url("../images/items/nybear-2.png");
+    background-image: url("../images/items/nybear-2.webp");
   }
   51% {
-    background-image: url("../images/items/balls-2.png");
+    background-image: url("../images/items/balls-2.webp");
   }
   59% {
-    background-image: url("../images/items/pizza-1.png");
+    background-image: url("../images/items/pizza-1.webp");
   }
   67% {
-    background-image: url("../images/items/balls-4.png");
+    background-image: url("../images/items/balls-4.webp");
   }
   75% {
-    background-image: url("../images/items/pizza-2.png");
+    background-image: url("../images/items/pizza-2.webp");
   }
   84% {
-    background-image: url("../images/items/cocktail.png");
+    background-image: url("../images/items/cocktail.webp");
   }
   92% {
-    background-image: url("../images/items/shot.png");
+    background-image: url("../images/items/shot.webp");
   }
   100% {
-    background-image: url("../images/items/shot.png");
+    background-image: url("../images/items/shot.webp");
   }
 }
 
 @keyframes aniLogoAfter {
   0% {
-    background-image: url("../images/items/tree.png");
+    background-image: url("../images/items/tree.webp");
   }
   9% {
-    background-image: url("../images/items/balls-1.png");
+    background-image: url("../images/items/balls-1.webp");
   }
   17% {
-    background-image: url("../images/items/nybear-3.png");
+    background-image: url("../images/items/nybear-3.webp");
   }
   25% {
-    background-image: url("../images/items/nybear-1.png");
+    background-image: url("../images/items/nybear-1.webp");
   }
   34% {
-    background-image: url("../images/items/balls-3.png");
+    background-image: url("../images/items/balls-3.webp");
   }
   42% {
-    background-image: url("../images/items/nybear-2.png");
+    background-image: url("../images/items/nybear-2.webp");
   }
   51% {
-    background-image: url("../images/items/balls-2.png");
+    background-image: url("../images/items/balls-2.webp");
   }
   59% {
-    background-image: url("../images/items/pizza-1.png");
+    background-image: url("../images/items/pizza-1.webp");
   }
   67% {
-    background-image: url("../images/items/balls-4.png");
+    background-image: url("../images/items/balls-4.webp");
   }
   75% {
-    background-image: url("../images/items/pizza-2.png");
+    background-image: url("../images/items/pizza-2.webp");
   }
   84% {
-    background-image: url("../images/items/cocktail.png");
+    background-image: url("../images/items/cocktail.webp");
   }
   92% {
-    background-image: url("../images/items/shot.png");
+    background-image: url("../images/items/shot.webp");
   }
   100% {
-    background-image: url("../images/items/shot.png");
+    background-image: url("../images/items/shot.webp");
   }
 }
 /*# sourceMappingURL=style.css.map */

@@ -1,5 +1,5 @@
 @import url("https://cdn.jsdelivr.net/npm/reseter.css");
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=block");
 
 $purple: #790f99;
 $red: #c30000;
@@ -290,15 +290,26 @@ body {
 	}
 }
 .Logotype {
+	span {
+		display: none;
+	}
+	font-size: 0px;
+	color: rgba($purple, 0);
 	// .Logotype__icon
 	&__icon {
 		display: block;
 		width: 50%;
+		// aspect-ratio: 1/1;
+		// background: url("../images/logotypeIco.png") no-repeat center center /
+		// contain;
 	}
 	// .Logotype__text
 	&__text {
 		display: block;
 		width: 50%;
+		// aspect-ratio: 1/1;
+		// background: url("../images/logotypeText.png") no-repeat center center /
+		// contain;
 	}
 }
 .HeadSocs {
@@ -312,6 +323,9 @@ body {
 		transition: all ease 0.2s;
 		&:hover {
 			transform: rotate(15deg);
+		}
+		span {
+			display: none;
 		}
 	}
 	// .HeadSocs__icon
@@ -440,7 +454,7 @@ body {
 			padding-left: 15px;
 			margin-top: 10px;
 		}
-		h3 {
+		h2 {
 			padding: 4px 0px;
 
 			border-left: 5px solid $green;
@@ -540,50 +554,50 @@ body {
 		}
 		// .Game__item--cocktail
 		&--cocktail {
-			background-image: url("../images/items/cocktail.png");
+			background-image: url("../images/items/cocktail.webp");
 		}
 		// .Game__item--shot
 		&--shot {
-			background-image: url("../images/items/shot.png");
+			background-image: url("../images/items/shot.webp");
 		}
 		// .Game__item--nybear
 		&--nybear {
 			&--1 {
-				background-image: url("../images/items/nybear-1.png");
+				background-image: url("../images/items/nybear-1.webp");
 			}
 			&--2 {
-				background-image: url("../images/items/nybear-2.png");
+				background-image: url("../images/items/nybear-2.webp");
 			}
 			&--3 {
-				background-image: url("../images/items/nybear-3.png");
+				background-image: url("../images/items/nybear-3.webp");
 			}
 		}
 		// .Game__item--balls
 		&--balls {
 			&--1 {
-				background-image: url("../images/items/balls-1.png");
+				background-image: url("../images/items/balls-1.webp");
 			}
 			&--2 {
-				background-image: url("../images/items/balls-2.png");
+				background-image: url("../images/items/balls-2.webp");
 			}
 			&--3 {
-				background-image: url("../images/items/balls-3.png");
+				background-image: url("../images/items/balls-3.webp");
 			}
 			&--4 {
-				background-image: url("../images/items/balls-4.png");
+				background-image: url("../images/items/balls-4.webp");
 			}
 		}
 		// .Game__item--tree
 		&--tree {
-			background-image: url("../images/items/tree.png");
+			background-image: url("../images/items/tree.webp");
 		}
 		// .Game__item--pizza
 		&--pizza {
 			&--1 {
-				background-image: url("../images/items/pizza-1.png");
+				background-image: url("../images/items/pizza-1.webp");
 			}
 			&--2 {
-				background-image: url("../images/items/pizza-2.png");
+				background-image: url("../images/items/pizza-2.webp");
 			}
 		}
 		// .Game__item--sticker
@@ -822,42 +836,42 @@ body {
 
 @keyframes aniLogoAfter {
 	0% {
-		background-image: url("../images/items/tree.png");
+		background-image: url("../images/items/tree.webp");
 	}
 	9% {
-		background-image: url("../images/items/balls-1.png");
+		background-image: url("../images/items/balls-1.webp");
 	}
 	17% {
-		background-image: url("../images/items/nybear-3.png");
+		background-image: url("../images/items/nybear-3.webp");
 	}
 	25% {
-		background-image: url("../images/items/nybear-1.png");
+		background-image: url("../images/items/nybear-1.webp");
 	}
 	34% {
-		background-image: url("../images/items/balls-3.png");
+		background-image: url("../images/items/balls-3.webp");
 	}
 	42% {
-		background-image: url("../images/items/nybear-2.png");
+		background-image: url("../images/items/nybear-2.webp");
 	}
 	51% {
-		background-image: url("../images/items/balls-2.png");
+		background-image: url("../images/items/balls-2.webp");
 	}
 	59% {
-		background-image: url("../images/items/pizza-1.png");
+		background-image: url("../images/items/pizza-1.webp");
 	}
 	67% {
-		background-image: url("../images/items/balls-4.png");
+		background-image: url("../images/items/balls-4.webp");
 	}
 	75% {
-		background-image: url("../images/items/pizza-2.png");
+		background-image: url("../images/items/pizza-2.webp");
 	}
 	84% {
-		background-image: url("../images/items/cocktail.png");
+		background-image: url("../images/items/cocktail.webp");
 	}
 	92% {
-		background-image: url("../images/items/shot.png");
+		background-image: url("../images/items/shot.webp");
 	}
 	100% {
-		background-image: url("../images/items/shot.png");
+		background-image: url("../images/items/shot.webp");
 	}
 }
