@@ -57,10 +57,18 @@ const randColor = () => {
 const isMobile = (window.outerWidth > 768 ? false : true);
 
 const mobileViewbox = (clear = false) => {
+	// return;
 	if (!isMobile) return;
-	document.querySelector(`body`).style.maxHeight = (clear ? '' : window.outerHeight + `px`);
-	document.querySelector(`body`).style.minHeight = (clear ? '' : window.outerHeight + `px`);
+	document.querySelector(`body`).style.maxHeight = (clear ? '' : window.innerHeight + `px`);
+	document.querySelector(`body`).style.minHeight = (clear ? '' : window.innerHeight + `px`);
+	document.querySelector(`body`).style.height = (clear ? '' : window.innerHeight + `px`);
+	// console.log(window);
+	// console.log(window.outerHeight);
 }
+
+window.addEventListener(`resize`, () => {
+	mobileViewbox();
+});
 
 const toggleFullScreen = () => {
 	if (!isMobile) return;
@@ -387,6 +395,8 @@ window.addEventListener(`load`, () => {
 		#setEndResult() {
 			this.#panels.end.querySelector(`b`).innerText = this.#score;
 			this.#panels.end.querySelector(`input[name='score']`).value = this.#score;
+			if (Cookie.get('instagram') != undefined)
+				this.#panels.end.querySelector(`input[name='instagram']`).value = Cookie.get('instagram');
 		}
 
 		#loadElements() {
@@ -415,8 +425,15 @@ window.addEventListener(`load`, () => {
 		}
 
 		async #loadResults() {
-			let response = await fetch('https://gfwe.ru/mishkabar/game/');
-			this.#results = await response.json();
+			let response = null;
+			try {
+				response = await fetch('https://gfwe.ru/mishkabar/game/');
+			} catch (error) {
+				alert('Ошибка при загрузке');
+			}
+			let data = await response.json();
+			// console.log(data);
+			this.#results = data;
 			this.#genResults();
 		}
 
@@ -464,16 +481,20 @@ window.addEventListener(`load`, () => {
 			Cookie.set('score', fd.get(`score`));
 			Cookie.set('instagram', fd.get(`instagram`));
 			this.#panels.form.reset();
-
-			let response = await fetch('https://gfwe.ru/mishkabar/game/', {
-				method: 'POST',
-				body: fd
-				// body: JSON.stringify(data)
-				// body: data
-			});
+			// console.log(fd);
+			let response = null;
+			try {
+				response = await fetch('https://gfwe.ru/mishkabar/game/', {
+					method: 'POST',
+					body: fd
+				});
+			} catch (error) {
+				alert('Ошибка при загрузке');
+			}
 			let result = await response.json();
-			// console.log(result);
-			if (result) {
+			console.log(result);
+
+			if (result.status) {
 				this.#openResults();
 			} else {
 				alert(`Произошла ошибка при сохранении: (`);
@@ -534,4 +555,21 @@ window.addEventListener(`load`, () => {
 		}
 	}
 
+	// function autoClick() {
+	// 	let id = setInterval(() => {
+	// 		for (const el of document.querySelectorAll(`.Game__item `)) {
+	// 			el.click();
+	// 		}
+	// 	}, 500);
+	// 	setTimeout(() => {
+	// 		clearInterval(id)
+	// 	}, 90 * 1000);
+	// }
+	// autoClick();
+	// console.log(window.screen);
+
+	// alert(window.innerHeight);
+	// alert(window.outerHeight);
+	// alert(window.screen.availHeight);
+	// alert(window.screen.height);
 });
