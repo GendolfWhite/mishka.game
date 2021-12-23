@@ -550,6 +550,9 @@ body {
 		&.new {
 			opacity: 0;
 		}
+		&.old {
+			transition: all linear 1s !important;
+		}
 		&.clicked {
 			// opacity: 0;
 			transition: all linear 0.2s;

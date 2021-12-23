@@ -708,6 +708,11 @@ body {
   opacity: 0;
 }
 
+.Game__item.old {
+  -webkit-transition: all linear 1s !important;
+  transition: all linear 1s !important;
+}
+
 .Game__item.clicked {
   -webkit-transition: all linear 0.2s;
   transition: all linear 0.2s;

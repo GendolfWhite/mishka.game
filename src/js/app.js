@@ -138,8 +138,8 @@ window.addEventListener(`load`, () => {
 		}
 		#addItemCount = 10; // кол-во итемов для добавления в тик по умолчанию
 		#randomAddCount = true; // Включить геннерацию рандомного числла для добавления новы итемов в тик.
-		#randAddCountMin = 5;
-		#randAddCountMax = 15;
+		#randAddCountMin = 10;
+		#randAddCountMax = 25;
 		#intervalIds = {
 			autoAdd: null,
 			autoClear: null,
@@ -221,6 +221,7 @@ window.addEventListener(`load`, () => {
 			let i = this.#maxItemCountOnField / 2;
 			for (const item of this.#panels.field.querySelectorAll(`*`)) {
 				if (i > 0) {
+					item.classList.add('old');
 					this.#addBonus(item, true);
 				} else {
 					this.#itemsProportions(item);
@@ -305,7 +306,7 @@ window.addEventListener(`load`, () => {
 			this.#intervalIds.autoClear = setInterval(() => {
 				for (const item of this.#panels.field.querySelectorAll(`.clicked`))
 					item.remove();
-			}, 1000);
+			}, 2000);
 		}
 
 		#setTimerVal() {
@@ -343,9 +344,9 @@ window.addEventListener(`load`, () => {
 				clearInterval(this.#intervalIds[key]);
 		}
 
-		#clear_Score() {
+		#clearScore() {
 			this.#score = 0;
-			this.#refresh_Score();
+			this.#refreshScore();
 		}
 
 		#togglePanel(panel, show = false) {
@@ -356,13 +357,13 @@ window.addEventListener(`load`, () => {
 			}
 		}
 
-		#refresh_Score() {
+		#refreshScore() {
 			this.#panels.info.querySelector(`b`).innerText = this.#score;
 		}
 
 		start() {
 			this.#clearField();
-			this.#clear_Score();
+			this.#clearScore();
 			this.#togglePanel('bttns');
 			this.#togglePanel('timer', 1);
 			this.#togglePanel('info', 1);
@@ -515,7 +516,7 @@ window.addEventListener(`load`, () => {
 
 			this.#panels.field.addEventListener(`click`, (e) => {
 				this.#addBonus(e.target);
-				this.#refresh_Score();
+				this.#refreshScore();
 			});
 
 			this.#panels.form.addEventListener(`submit`, (e) => {
