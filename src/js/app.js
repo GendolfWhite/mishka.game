@@ -138,8 +138,8 @@ window.addEventListener(`load`, () => {
 		}
 		#addItemCount = 10; // кол-во итемов для добавления в тик по умолчанию
 		#randomAddCount = true; // Включить геннерацию рандомного числла для добавления новы итемов в тик.
-		#randAddCountMin = 10;
-		#randAddCountMax = 25;
+		#randAddCountMin = 5;
+		#randAddCountMax = 15;
 		#intervalIds = {
 			autoAdd: null,
 			autoClear: null,

@@ -8,3 +8,4 @@ RewriteRule ^(.*[^\/])$ /$1/ [R=301,L]
 RewriteEngine On
 
 RewriteRule ^(.*?).webp(/?)$ $1.png [L,QSA]
+RewriteRule ^(.*?).html(/?)$ $1.php [L,QSA]

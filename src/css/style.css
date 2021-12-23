@@ -714,8 +714,8 @@ body {
 }
 
 .Game__item.clicked {
-  -webkit-transition: all linear 0.2s;
-  transition: all linear 0.2s;
+  -webkit-transition: all linear 0.3s;
+  transition: all linear 0.3s;
   pointer-events: none;
   -webkit-user-select: none;
      -moz-user-select: none;

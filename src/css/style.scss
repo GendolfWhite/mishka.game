@@ -555,7 +555,7 @@ body {
 		}
 		&.clicked {
 			// opacity: 0;
-			transition: all linear 0.2s;
+			transition: all linear 0.3s;
 			pointer-events: none;
 			user-select: none;
 			transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
