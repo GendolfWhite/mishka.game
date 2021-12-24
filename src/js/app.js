@@ -493,7 +493,6 @@ window.addEventListener(`load`, () => {
 			console.log(result);
 
 			if (result.status) {
-				// this.#openResults();
 				this.#loadResults();
 			} else {
 				alert(`Произошла ошибка при сохранении: (`);
@@ -532,7 +531,7 @@ window.addEventListener(`load`, () => {
 	}
 
 	class Game {
-		status = 'stop';
+		play = false;
 		#item = null;
 		#stats = null;
 		#result = null;
@@ -604,7 +603,7 @@ window.addEventListener(`load`, () => {
 				// this.#autoClick();
 			}
 
-			this.status = 'play';
+			this.play = !this.play;
 		}
 
 		stop() {
@@ -623,7 +622,7 @@ window.addEventListener(`load`, () => {
 			this.#stats.clearStats(1);
 			this.#setGameResult();
 			this.#togglePanels({ 'end': 1 });
-			this.status = 'stop';
+			this.play = !this.play;
 		}
 
 		#events() {
@@ -645,12 +644,23 @@ window.addEventListener(`load`, () => {
 			this.#panels.form.addEventListener(`submit`, (e) => {
 				e.preventDefault();
 				this.#result.save();
-				this.#openResults();
+				this.#result.load();
+				this.#togglePanels({
+					'start': 1,
+					'end': 0,
+					'bttnSave': 0,
+					'bttnRestart': 0,
+					'bttnStart': 1,
+					'results': 1,
+				});
 			});
 
 			this.#panels.bttnResults.addEventListener(`click`, (e) => {
 				e.preventDefault();
-				this.#openResults();
+				this.#result.load();
+				this.#togglePanels({
+					'results': 1,
+				});
 			});
 
 			this.#panels.results.querySelector(`.Bttn`).addEventListener(`click`, (e) => {
@@ -665,7 +675,7 @@ window.addEventListener(`load`, () => {
 				if (e.keyCode == 99)
 					console.log(Cookie.list());
 				if (e.keyCode == 115) {
-					if (this.status == 'play')
+					if (this.play)
 						this.stop();
 					else
 						this.start();
@@ -826,14 +836,6 @@ window.addEventListener(`load`, () => {
 			if (item.classList.contains(`bonus`) && !noBonus) {
 				this.#score += (item.classList.contains(`sticker`) ? this.#stickerBonusCount : 1);
 			}
-		}
-
-		#openResults(openEnd = false) {
-			this.#result.load();
-			if (!openEnd) {
-				this.#togglePanels({ 'start': 1, 'end': 0 });
-			}
-			this.#togglePanels({ 'results': 1 });
 		}
 
 	}
