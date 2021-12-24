@@ -733,6 +733,139 @@ body {
 	}
 }
 
+.GameItem {
+	position: absolute;
+	cursor: pointer;
+	width: 45px;
+	height: 45px;
+	background: no-repeat center / contain;
+	background-color: unset !important;
+	font-size: 0px;
+	opacity: 1;
+	transition: all ease-out 1s;
+	&.small {
+		width: 40px;
+		height: 40px;
+		position: static;
+		@media (max-width: 325px) {
+			width: 30px;
+			height: 30px;
+		}
+	}
+	&.new {
+		opacity: 0;
+	}
+	&.old {
+		transition: all linear 1s !important;
+	}
+	&.clicked {
+		// opacity: 0;
+		transition: all linear 0.3s;
+		pointer-events: none;
+		user-select: none;
+		transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
+	}
+	// .GameItem--cocktail
+	&--cocktail {
+		background-image: url("../images/items/cocktail.webp");
+	}
+	// .GameItem--shot
+	&--shot {
+		background-image: url("../images/items/shot.webp");
+	}
+	// .GameItem--nybear
+	&--nybear {
+		&--1 {
+			background-image: url("../images/items/nybear-1.webp");
+		}
+		&--2 {
+			background-image: url("../images/items/nybear-2.webp");
+		}
+		&--3 {
+			background-image: url("../images/items/nybear-3.webp");
+		}
+	}
+	// .GameItem--balls
+	&--balls {
+		&--1 {
+			background-image: url("../images/items/balls-1.webp");
+		}
+		&--2 {
+			background-image: url("../images/items/balls-2.webp");
+		}
+		&--3 {
+			background-image: url("../images/items/balls-3.webp");
+		}
+		&--4 {
+			background-image: url("../images/items/balls-4.webp");
+		}
+	}
+	// .GameItem--tree
+	&--tree {
+		background-image: url("../images/items/tree.webp");
+	}
+	// .GameItem--pizza
+	&--pizza {
+		&--1 {
+			background-image: url("../images/items/pizza-1.webp");
+		}
+		&--2 {
+			background-image: url("../images/items/pizza-2.webp");
+		}
+	}
+	// .GameItem--sticker
+	&--sticker {
+		&--1 {
+			background-image: url("../images/items/sticker/1.png");
+		}
+		&--2 {
+			background-image: url("../images/items/sticker/2.png");
+		}
+		&--3 {
+			background-image: url("../images/items/sticker/3.png");
+		}
+		&--4 {
+			background-image: url("../images/items/sticker/4.png");
+		}
+		&--5 {
+			background-image: url("../images/items/sticker/5.png");
+		}
+		&--6 {
+			background-image: url("../images/items/sticker/6.png");
+		}
+		&--7 {
+			background-image: url("../images/items/sticker/7.png");
+		}
+		&--8 {
+			background-image: url("../images/items/sticker/8.png");
+		}
+		&--9 {
+			background-image: url("../images/items/sticker/9.png");
+		}
+		&--10 {
+			background-image: url("../images/items/sticker/10.png");
+		}
+		&--11 {
+			background-image: url("../images/items/sticker/11.png");
+		}
+		&--12 {
+			background-image: url("../images/items/sticker/12.png");
+		}
+		&--13 {
+			background-image: url("../images/items/sticker/13.png");
+		}
+		&--14 {
+			background-image: url("../images/items/sticker/14.png");
+		}
+		&--15 {
+			background-image: url("../images/items/sticker/15.png");
+		}
+		&--16 {
+			background-image: url("../images/items/sticker/16.png");
+		}
+	}
+}
+
 .Footer {
 	background: url("../images/body.jpg") no-repeat center / cover;
 	// opacity: 0.7;
@@ -993,5 +1126,37 @@ body {
 	.Game {
 		flex: 1;
 		height: 100%;
+	}
+}
+
+.Stats {
+	position: fixed;
+	top: 0;
+	right: 0;
+	background: rgba(#111111, 0.75);
+	padding: 45px;
+	color: #fff;
+	text-align: right;
+	counter-reset: Stats;
+	border-collapse: collapse;
+	pointer-events: none;
+	user-select: none;
+	opacity: 0.65;
+	tr {
+		th {
+			background: $green;
+			color: #fff;
+			font-weight: 300;
+			padding: 5px;
+		}
+		td {
+			padding: 2px 5px;
+			&:first-child {
+				&:after {
+					counter-increment: Stats;
+					content: counter(Stats);
+				}
+			}
+		}
 	}
 }

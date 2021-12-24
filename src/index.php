@@ -61,7 +61,10 @@
 	favicon/favicon-310.png">
 
 	<link rel="stylesheet" href="/css/style.css?ver=<?= filemtime(__DIR__ . '/css/style.css') ?>">
-	<script src="/js/app.js?ver=<?= filemtime(__DIR__ . '/js/app.js') ?>"></script>
+	<script type='module' src='/js/oldGame.js?ver=<?= filemtime(__DIR__ . '/js/oldGame.js') ?>'></script>
+	<script type='module' src='/js/Game.js?ver=<?= filemtime(__DIR__ . '/js/Game.js') ?>'></script>
+	<script type='module' src='/js/GameItem.js?ver=<?= filemtime(__DIR__ . '/js/GameItem.js') ?>'></script>
+	<script type='module' src="/js/app.js?ver=<?= filemtime(__DIR__ . '/js/app.js') ?>"></script>
 </head>
 
 <body class="Preloader flex flex--fdc flex--aic flex--jcs">
@@ -209,6 +212,7 @@
 		<div><img src="https://mc.yandex.ru/watch/51323302" style="position:absolute; left:-9999px;" alt="" /></div>
 	</noscript>
 	<!-- /Yandex.Metrika counter -->
+
 </body>
 
 </html>

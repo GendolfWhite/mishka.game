@@ -124,159 +124,409 @@ window.addEventListener(`load`, () => {
 		});
 	}
 
-	class Game {
-		#results = null;
-		#panels = {
-			field: null,
-			bttns: null,
-			timer: null,
-			info: null,
-			start: null,
-			bttnSave: null,
-			form: null,
-			results: null,
+	class GameStatsTable {
+		#aT = null;
+		#data = {};
+		constructor(show = true, data = {}) {
+			this.#create();
+			if (show) {
+				this.#setData(data);
+				this.#generateTable();
+				this.#aT.hidden = 0;
+			}
 		}
-		#addItemCount = 10; // кол-во итемов для добавления в тик по умолчанию
-		#randomAddCount = true; // Включить геннерацию рандомного числла для добавления новы итемов в тик.
-		#randAddCountMin = 5;
-		#randAddCountMax = 15;
-		#intervalIds = {
-			autoAdd: null,
-			autoClear: null,
-			timer: null,
+
+		#create() {
+			let div = document.createElement('div');
+			div.innerHTML = `<table class="Stats" id='adminTable' hidden><thead><tr><th>#</th><th>name</th><th>gen</th><th>count</th><th>proportion</th></tr></thead><tbody></tbody><tfoot></tfoot></table>`;
+			document.querySelector(`body`).append(div);
+			this.#aT = document.querySelector(`#adminTable`);
 		}
-		#autoAddInterval = 1; // sec
-		#startItemsCount = 15;
-		#maxItemCountOnField = 300;
-		#bonusStickers = [4, 11, 13];
-		#stickerBonusCount = 2;
+
+		#setData(data) {
+			this.#data = data;
+		}
+
+		#generateTable() {
+			for (const type in this.#data.typeProportion)
+				this.#aT.querySelector(`tbody`).append(this.#adminTr(type, type));
+			this.#aT.querySelector(`tfoot`).append(this.#adminTr(`itemCount`, `itemCount`, false));
+			this.#aT.querySelector(`tfoot`).append(this.#adminTr(`itemGennerate`, `itemGennerate`, false));
+		}
+
+		#adminTd(val = false, id = false, colspan = false) {
+			let td = document.createElement(`td`);
+			if (val)
+				td.innerText = val;
+			if (id)
+				td.setAttribute(`id`, id);
+			if (colspan)
+				td.setAttribute(`colspan`, colspan);
+			return td;
+		}
+
+		#adminTr(name, id, body = true) {
+			let tr = document.createElement(`tr`);
+			tr.append(this.#adminTd());
+			tr.append(this.#adminTd(name, false, (body ? false : 2)));
+			if (body) {
+				tr.append(this.#adminTd(false, id + `_gen`));
+				tr.append(this.#adminTd(false, id + `_count`));
+				tr.append(this.#adminTd(false, id + `_proportion`));
+			} else {
+				tr.append(this.#adminTd(false, id, (body ? false : 2)));
+			}
+			return tr;
+		}
+
+		#adminTableVal(id, val) {
+			this.#aT.querySelector(`#${id}`).innerText = val;
+		}
+
+		draw(data) {
+			this.#setData(data);
+			this.#adminTableVal(`itemCount`, this.#data.itemCount);
+			this.#adminTableVal(`itemGennerate`, this.#data.itemGennerate);
+			for (const type in this.#data.typeProportion) {
+				this.#adminTableVal(`${type}_gen`, this.#data.typeCount[type].gennerate);
+				this.#adminTableVal(`${type}_count`, this.#data.typeCount[type].current);
+				this.#adminTableVal(`${type}_proportion`, this.#data.typeProportion[type]);
+			}
+		}
+	}
+
+	class GameStats {
+		#currentType = null;
+		#types = [];
+		#itemGennerate = 0;
+		#itemCount = 0;
+		#typeProportion = {};
+		#typeCount = {};
+		constructor(types) {
+			this.#types = types;
+			this.#createTypeStats();
+
+			this.table = new GameStatsTable(1, this.#getStatDate());
+		}
+
+		#getStatDate() {
+			return { itemGennerate: this.#itemGennerate, itemCount: this.#itemCount, typeProportion: this.#typeProportion, typeCount: this.#typeCount }
+		}
+
+		#setCurrentType(type) {
+			this.#currentType = type;
+		}
+
+		#createTypeStats() {
+			for (const type of this.#types) {
+				this.#typeProportion[type] = 0;
+				this.#typeCount[type] = {
+					gennerate: 0,
+					current: 0,
+				};
+			}
+		}
+
+		#calcProportion(all, current) {
+			return (current * 100 / all).toFixed(2);
+		}
+
+		typeProportion(type) {
+			return this.#calcProportion(this.#itemGennerate, this.#typeCount[type].gennerate + 1);
+		}
+
+		getItemCount() {
+			return this.#itemCount;
+		}
+
+		#calcAllCount() {
+			this.#itemCount = 0;
+			for (const type in this.#typeCount) {
+				this.#itemCount += this.#typeCount[type].current;
+			}
+		}
+
+		#setProportion(proportion) {
+			this.#typeProportion[this.#currentType] = proportion;
+		}
+
+		#setCount(count = false) {
+			this.#typeCount[this.#currentType].current = (count ? count : this.#typeCount[this.#currentType].current + 1);
+			this.#setProportion(this.#calcProportion(this.#itemGennerate, this.#typeCount[this.#currentType].gennerate));
+			if (count) {
+				this.#calcAllCount();
+			} else {
+				this.#itemCount++;
+			}
+		}
+
+		setCount(type, count) {
+			this.#setCurrentType(type);
+			this.#setCount(count);
+		}
+
+		#addGennerate() {
+			this.#typeCount[this.#currentType].gennerate++;
+			this.#itemGennerate++;
+		}
+
+		addStat(type) {
+			this.#setCurrentType(type);
+			this.#setCount(false);
+			this.#addGennerate();
+			this.table.draw(this.#getStatDate());
+		}
+
+		clearStats(global = false) {
+			if (global)
+				this.#itemGennerate = 0;
+			this.#itemCount = 0;
+			this.#typeProportion = {};
+			this.#typeCount = {};
+			this.#createTypeStats();
+		}
+	}
+
+	class GameItem {
+		#item = null;
+		#itemStyles = [];
+		#prototype = null;
+		#itemType = null;
 		#itemMinScale = 1.5;
 		#itemMaxScale = 2.5;
-		#gameDuration = 5; // сек
-		#currentTime = 0;
-		#score = 0;
-		#generatedItemCount = {
-			all: 0,
+		#bonusStickers = [4, 11, 13];
+		#itemTypes = [];
+		#items = {
+			cocktail: { name: "Виски-кола", specimen: null, className: 'cocktail', addBonus: true },
+			shot: { name: "Лимончело", specimen: null, className: 'shot', addBonus: true },
+			nybear: { name: "Медведь в новогодней шапке", specimen: null, className: 'nybear', addBonus: true, count: 3 },
+			balls: { name: "Ёлочные шары", specimen: null, className: 'balls', addBonus: true, count: 4 },
+			tree: { name: "Ёлка", specimen: null, className: 'tree', addBonus: true },
+			pizza: { name: "Пицца", specimen: null, className: 'pizza', addBonus: true, count: 2 },
+			sticker: { name: "Стикеры из телеги", specimen: null, className: 'sticker', addBonus: false, count: 16 },
 		};
-		#itemsCount = 0;
-		#proportion = {};
-		#items = [
-			{ name: "Виски-кола", proportion: 15, className: 'cocktail', addBonus: true }, { name: "Лимончело", proportion: 15, className: 'shot', addBonus: true }, { name: "Медведь в новогодней шапке", proportion: 15, className: 'nybear', addBonus: true }, { name: "Ёлочные шары", proportion: 15, className: 'balls', addBonus: true }, { name: "Ёлка", proportion: 15, className: 'tree', addBonus: true }, { name: "Стикеры из телеги", proportion: 60, className: 'sticker', addBonus: false, }, { name: "Пицца", proportion: 15, className: 'pizza', addBonus: true },
-		];
+
+		constructor() {
+			this.#createItemLibrary();
+		}
+
+		#addTypeToList(type) {
+			this.#itemTypes.push(type);
+		}
+
+		#createItemLibrary() {
+			for (const type in this.#items) {
+				this.#setPrototype(this.#items[type]);
+				this.#addTypeToList(type);
+				this.#newItem();
+				this.#setItemType();
+				this.#items[type].specimen = this.#getItem();
+
+				if (this.#items[type].count !== undefined) {
+					this.#items[type].specimen = this.#getItemStyles();
+				}
+			}
+		}
+
+		#clearItemStyles() {
+			this.#itemStyles = [];
+		}
+
+		#addItemStyle(item) {
+			this.#itemStyles.push(item);
+		}
+
+		#createItemStyles() {
+			for (let index = 1; index <= this.#prototype.count; index++) {
+				this.#setItem(this.#prototype.specimen.cloneNode());
+				this.#setItemStyle(index);
+				this.#addItemStyle(this.#getItem());
+			}
+		}
+
+		#getItemStyles() {
+			this.#clearItemStyles();
+			this.#createItemStyles();
+			return this.#itemStyles;
+		}
+
+		#newItem() {
+			this.#item = document.createElement('div');
+		}
+
+		#setItem(item) {
+			this.#item = item;
+		}
+
+		#setPrototype(prototype) {
+			this.#prototype = prototype;
+		}
+
+		#setItemStyle(index) {
+			this.#item.classList.add(`GameItem--` + this.#prototype.className + `--` + index);
+			if (this.#prototype.className == 'sticker') {
+				if (this.#bonusStickers.includes(index)) // Бонусные стикеры>
+					this.#item.classList.add('bonus', `sticker`);
+			}
+		}
+
+		#setItemType() {
+			this.#item.setAttribute('data-type', this.#prototype.className);
+			this.#item.classList.add('GameItem');
+			this.#item.classList.add('GameItem--' + this.#prototype.className);
+
+			if (this.#prototype.addBonus === true)
+				this.#item.classList.add('bonus');
+
+			this.#item.classList.add('new');
+		}
+
+		#getItem() {
+			return this.#item;
+		}
 
 		#randInt(min, max, float = false) {
 			return (float ? Math.random() * (max - min) + min : Math.floor(Math.random() * (max - min) + min));
 		}
 
-		#randColor() {
-			return `rgba(${this.#randInt(0, 255)}, ${this.#randInt(0, 255)}, ${this.#randInt(0, 255)}, 1)`;
+		#setItemPosition() {
+			this.#item.style.top = this.#randInt(0, 100) + '%';
+			this.#item.style.left = this.#randInt(0, 100) + '%';
 		}
+
+		#setItemTransform() {
+			this.#item.style.transform = `translate(-50%, -50%) rotate(${this.#randInt(0, 359)}deg) scale(${this.#randInt(this.#itemMinScale, this.#itemMaxScale, 1)})`;
+		}
+
+		#setItemCoordinate() {
+			this.#setItemPosition();
+			this.#setItemTransform();
+		}
+
+		#setNewItemType(type) {
+			this.#itemType = (type ? type : this.getRandType());
+		}
+
+		#getRandStyle() {
+			return this.#items[this.#itemType].specimen[this.#randInt(0, this.#items[this.#itemType].specimen.length - 1)];
+		}
+
+		#selectItem() {
+			this.#setItem((Array.isArray(this.#items[this.#itemType].specimen) ? this.#getRandStyle() : this.#items[this.#itemType].specimen).cloneNode(true));
+		}
+
+		getTypes() {
+			return this.#itemTypes;
+		}
+
+		getRandType() {
+			return this.#itemTypes[this.#randInt(0, this.#itemTypes.length)];
+		}
+
+		getItem(type = false) {
+			this.#setNewItemType(type);
+			this.#selectItem();
+			this.#setItemCoordinate();
+			return this.#getItem();
+		}
+	}
+
+	class Game {
+		#item = null;
+		#stats = null;
+		#results = null;
+		#panels = {};
+		#intervalIds = {
+			autoAdd: null,
+			autoClear: null,
+			timer: null,
+		};
+
+		#addItemCount = 10; // кол-во итемов для добавления в тик по умолчанию
+		#randomAddCount = true; // Включить геннерацию рандомного числла для добавления новы итемов в тик.
+		#randAddCountMin = 5;
+		#randAddCountMax = 15;
+		#autoAddInterval = 1; // sec
+		#startItemsCount = 15;
+		#maxItemCountOnField = 300;
+
+		#stickerBonusCount = 2;
+
+		#gameDuration = 60; // сек
+		#currentTime = 0;
+		#score = 0;
+
+		#proportion = {
+			cocktail: 15,
+			shot: 15,
+			nybear: 15,
+			balls: 15,
+			tree: 15,
+			pizza: 15,
+			sticker: 50,
+		};
 
 		constructor(gameDuration = false) {
 			if (gameDuration)
 				this.#gameDuration = gameDuration;
 			this.#loadElements();
 			this.#events();
+
+			this.#item = new GameItem;
+			this.#stats = new GameStats(this.#item.getTypes());
 		}
 
-		#resetStats(global = true) {
-			this.#itemsCount = 0;
-			if (global)
-				this.#generatedItemCount = { all: 0 };
-			this.#proportion = {};
+		#randInt(min, max, float = false) {
+			return (float ? Math.random() * (max - min) + min : Math.floor(Math.random() * (max - min) + min));
 		}
 
-		#updateStats(item) {
-			let attr = (item.tagName == 'DIV' ? item.getAttribute(`data-type`) : item.className);
-			this.#itemsCount++;
-			this.#proportion[attr].count++;
-			this.#proportion[attr].rate = this.#calcProportion(this.#itemsCount, this.#proportion[attr].count);
-
-			this.#generatedItemCount.all++;
-			if (typeof this.#generatedItemCount[attr] == 'undefined')
-				this.#generatedItemCount[attr] = 0;
-			this.#generatedItemCount[attr]++;
-		}
-
-		#calcProportion(all, current) {
-			return current * 100 / all;
-		}
-
-		#itemsProportions(item) {
-			let attr = (item.tagName == 'DIV' ? item.getAttribute(`data-type`) : item.className);
-
-			if (typeof this.#proportion[attr] == 'undefined')
-				this.#proportion[attr] = { count: 0, rate: 0 };
-
-			if (this.#calcProportion(this.#itemsCount + 1, this.#proportion[attr].count + 1) >= item.proportion) {
-				return false;
+		#checkTypeProportion(type, newProportion) {
+			if (newProportion >= this.#proportion[type]) {
+				return true;
 			} else {
-				return item;
+				return false;
+			}
+		}
+
+		#getTypeItem() {
+			let type = false;
+			if (this.#startItemsCount > this.#stats.getItemCount()) {
+				type = this.#item.getRandType();
+			} else {
+				while (type === false) {
+					type = this.#item.getRandType();
+					let prop = this.#stats.typeProportion(type);
+					if (this.#checkTypeProportion(type, prop)) {
+						type = false;
+					}
+				}
+			}
+			this.#stats.addStat(type);
+			return type;
+		}
+
+		#genItem() {
+			if (this.#maxItemCountOnField < this.#stats.getItemCount())
+				this.#removeOldItems();
+			return this.#item.getItem(this.#getTypeItem());
+		}
+
+		#updateStats() {
+			for (const type of this.#item.getTypes()) {
+				this.#stats.setCount(type, this.#panels.field.querySelectorAll(`[data-type='${type}']:not(.old)`).length);
 			}
 		}
 
 		#removeOldItems() {
-			// console.log('removeOldItems');
-			this.#resetStats(false);
 			let i = this.#maxItemCountOnField / 2;
 			for (const item of this.#panels.field.querySelectorAll(`*`)) {
 				if (i > 0) {
 					item.classList.add('old');
 					this.#addBonus(item, true);
-				} else {
-					this.#itemsProportions(item);
-					this.#updateStats(item);
 				}
 				i--;
 			}
-		}
-
-		#getPrototypeItem() {
-			let item = false;
-
-			if (this.#startItemsCount > this.#itemsCount) {
-				item = this.#items[this.#randInt(0, this.#items.length - 1)];
-				this.#itemsProportions(item);
-			} else {
-				while (item == false) {
-					item = this.#itemsProportions(this.#items[this.#randInt(0, this.#items.length - 1)]);
-				}
-			}
-
-			this.#updateStats(item);
-
-			if (this.#maxItemCountOnField < this.#itemsCount)
-				this.#removeOldItems();
-			return item;
-		}
-
-		#genItem() {
-			let prototype = this.#getPrototypeItem();
-
-			let item = document.createElement('div');
-			item.setAttribute('data-type', prototype.className);
-			item.classList.add('new');
-			item.classList.add('Game__item');
-			item.classList.add('Game__item--' + prototype.className);
-			if (prototype.addBonus === true)
-				item.classList.add('bonus');
-			if (prototype.className == 'nybear')
-				item.classList.add('Game__item--' + prototype.className + `--` + this.#randInt(1, 3));
-			if (prototype.className == 'pizza')
-				item.classList.add('Game__item--' + prototype.className + `--` + this.#randInt(1, 2));
-			if (prototype.className == 'balls')
-				item.classList.add('Game__item--' + prototype.className + `--` + this.#randInt(1, 4));
-			if (prototype.className == 'sticker') {
-				let id = this.#randInt(1, 16);
-				item.classList.add('Game__item--' + prototype.className + `--` + id);
-				if (this.#bonusStickers.includes(id)) // Бонусные стикеры>
-					item.classList.add('bonus', `sticker`);
-			}
-			item.style.top = this.#randInt(0, 100) + '%';
-			item.style.left = this.#randInt(0, 100) + '%';
-			item.style.transform = `translate(-50%, -50%) rotate(${this.#randInt(0, 359)}deg) scale(${this.#randInt(this.#itemMinScale, this.#itemMaxScale, 1)})`;
-
-			return item;
+			this.#updateStats();
 		}
 
 		#addMoreItems(start = false) {
@@ -323,20 +573,7 @@ window.addEventListener(`load`, () => {
 				this.#setTimerVal();
 				if (this.#currentTime == 0)
 					this.stop();
-				if (test)
-					this.#consoleProportion();
 			}, 1000);
-		}
-
-		#consoleProportion() {
-			let str = [];
-			for (const key in this.#proportion) {
-				str.push(`[${this.#proportion[key].count}/${this.#generatedItemCount[key]}] ${key} - ${this.#proportion[key].rate}`);
-			}
-			console.log(str.join("\n"));
-
-			console.log(`generatedItemCount	=>	` + this.#generatedItemCount.all);
-			console.log(`itemsCount	=>	` + this.#itemsCount);
 		}
 
 		#stopIntervals() {
@@ -351,9 +588,20 @@ window.addEventListener(`load`, () => {
 
 		#togglePanel(panel, show = false) {
 			if (show) {
-				this.#panels[panel].classList.remove('hide');
+				this.#panels[panels].classList.remove('hide');
 			} else {
-				this.#panels[panel].classList.add('hide');
+				this.#panels[panels].classList.add('hide');
+			}
+		}
+
+		#togglePanels(panels = {}) {
+			// eval(`this.#panels[panel].classList.` + (show ? `remove` : `add`) + `('hide');`);
+			for (const name in panels) {
+				if (panels[name]) {
+					this.#panels[name].classList.remove('hide');
+				} else {
+					this.#panels[name].classList.add('hide');
+				}
 			}
 		}
 
@@ -364,12 +612,15 @@ window.addEventListener(`load`, () => {
 		start() {
 			this.#clearField();
 			this.#clearScore();
-			this.#togglePanel('bttns');
-			this.#togglePanel('timer', 1);
-			this.#togglePanel('info', 1);
-			this.#togglePanel('field', 1);
-			this.#togglePanel('start');
-			this.#togglePanel('end');
+			this.#togglePanels({
+				'bttns': 0,
+				'timer': 1,
+				'info': 1,
+				'field': 1,
+				'start': 0,
+				'end': 0,
+			});
+
 			this.#addMoreItems(true);
 			this.#timer();
 			this.#autoAdd();
@@ -379,18 +630,21 @@ window.addEventListener(`load`, () => {
 		stop() {
 			this.#stopIntervals();
 			this.#clearField();
-			this.#togglePanel('bttns', 1);
-			this.#togglePanel('timer', 0);
-			this.#togglePanel('info', 0);
-			this.#togglePanel('field', 0);
-			this.#togglePanel('start', 0);
-			this.#togglePanel('bttnSave', 1);
-			this.#togglePanel('bttnStart', 0);
-			this.#togglePanel('bttnRestart', 1);
-			this.#resetStats();
+			this.#togglePanels({
+				'bttns': 1,
+				'timer': 0,
+				'info': 0,
+				'field': 0,
+				'start': 0,
+				'bttnSave': 1,
+				'bttnStart': 0,
+				'bttnRestart': 1,
+			});
+
+			this.#stats.clearStats(1);
 
 			this.#setEndResult();
-			this.#togglePanel('end', 1);
+			this.#togglePanels({ 'end': 1 });
 		}
 
 		#setEndResult() {
@@ -415,7 +669,6 @@ window.addEventListener(`load`, () => {
 			this.#panels.results = document.querySelector(`.Game__results`);
 			this.#panels.results = document.querySelector(`.Game__results`);
 			this.#panels.tbody = this.#panels.results.querySelector('tbody');
-
 		}
 
 		#addBonus(item, noBonus = false) {
@@ -470,10 +723,9 @@ window.addEventListener(`load`, () => {
 
 		#openResults(openEnd = false) {
 			if (!openEnd) {
-				this.#togglePanel('start', 1);
-				this.#togglePanel('end');
+				this.#togglePanels({ 'start': 1, 'end': 0 });
 			}
-			this.#togglePanel('results', 1);
+			this.#togglePanels({ 'results': 1 });
 			this.#loadResults();
 		}
 
@@ -482,7 +734,7 @@ window.addEventListener(`load`, () => {
 			Cookie.set('score', fd.get(`score`));
 			Cookie.set('instagram', fd.get(`instagram`));
 			this.#panels.form.reset();
-			// console.log(fd);
+
 			let response = null;
 			try {
 				response = await fetch('https://gfwe.ru/mishkabar/game/', {
@@ -500,7 +752,6 @@ window.addEventListener(`load`, () => {
 			} else {
 				alert(`Произошла ошибка при сохранении: (`);
 			}
-			// console.log(result);
 		}
 
 		#events() {
@@ -531,7 +782,7 @@ window.addEventListener(`load`, () => {
 
 			this.#panels.results.querySelector(`.Bttn`).addEventListener(`click`, (e) => {
 				e.preventDefault();
-				this.#togglePanel('results');
+				this.#togglePanels({ 'results': 0 });
 			});
 		}
 	}

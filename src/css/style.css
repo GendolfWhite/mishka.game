@@ -920,6 +920,165 @@ body {
   content: "#" counter(results);
 }
 
+.GameItem {
+  position: absolute;
+  cursor: pointer;
+  width: 45px;
+  height: 45px;
+  background: no-repeat center / contain;
+  background-color: unset !important;
+  font-size: 0px;
+  opacity: 1;
+  -webkit-transition: all ease-out 1s;
+  transition: all ease-out 1s;
+}
+
+.GameItem.small {
+  width: 40px;
+  height: 40px;
+  position: static;
+}
+
+@media (max-width: 325px) {
+  .GameItem.small {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.GameItem.new {
+  opacity: 0;
+}
+
+.GameItem.old {
+  -webkit-transition: all linear 1s !important;
+  transition: all linear 1s !important;
+}
+
+.GameItem.clicked {
+  -webkit-transition: all linear 0.3s;
+  transition: all linear 0.3s;
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
+          transform: translate(-50%, -50%) rotate(-90deg) scale(0) !important;
+}
+
+.GameItem--cocktail {
+  background-image: url("../images/items/cocktail.webp");
+}
+
+.GameItem--shot {
+  background-image: url("../images/items/shot.webp");
+}
+
+.GameItem--nybear--1 {
+  background-image: url("../images/items/nybear-1.webp");
+}
+
+.GameItem--nybear--2 {
+  background-image: url("../images/items/nybear-2.webp");
+}
+
+.GameItem--nybear--3 {
+  background-image: url("../images/items/nybear-3.webp");
+}
+
+.GameItem--balls--1 {
+  background-image: url("../images/items/balls-1.webp");
+}
+
+.GameItem--balls--2 {
+  background-image: url("../images/items/balls-2.webp");
+}
+
+.GameItem--balls--3 {
+  background-image: url("../images/items/balls-3.webp");
+}
+
+.GameItem--balls--4 {
+  background-image: url("../images/items/balls-4.webp");
+}
+
+.GameItem--tree {
+  background-image: url("../images/items/tree.webp");
+}
+
+.GameItem--pizza--1 {
+  background-image: url("../images/items/pizza-1.webp");
+}
+
+.GameItem--pizza--2 {
+  background-image: url("../images/items/pizza-2.webp");
+}
+
+.GameItem--sticker--1 {
+  background-image: url("../images/items/sticker/1.png");
+}
+
+.GameItem--sticker--2 {
+  background-image: url("../images/items/sticker/2.png");
+}
+
+.GameItem--sticker--3 {
+  background-image: url("../images/items/sticker/3.png");
+}
+
+.GameItem--sticker--4 {
+  background-image: url("../images/items/sticker/4.png");
+}
+
+.GameItem--sticker--5 {
+  background-image: url("../images/items/sticker/5.png");
+}
+
+.GameItem--sticker--6 {
+  background-image: url("../images/items/sticker/6.png");
+}
+
+.GameItem--sticker--7 {
+  background-image: url("../images/items/sticker/7.png");
+}
+
+.GameItem--sticker--8 {
+  background-image: url("../images/items/sticker/8.png");
+}
+
+.GameItem--sticker--9 {
+  background-image: url("../images/items/sticker/9.png");
+}
+
+.GameItem--sticker--10 {
+  background-image: url("../images/items/sticker/10.png");
+}
+
+.GameItem--sticker--11 {
+  background-image: url("../images/items/sticker/11.png");
+}
+
+.GameItem--sticker--12 {
+  background-image: url("../images/items/sticker/12.png");
+}
+
+.GameItem--sticker--13 {
+  background-image: url("../images/items/sticker/13.png");
+}
+
+.GameItem--sticker--14 {
+  background-image: url("../images/items/sticker/14.png");
+}
+
+.GameItem--sticker--15 {
+  background-image: url("../images/items/sticker/15.png");
+}
+
+.GameItem--sticker--16 {
+  background-image: url("../images/items/sticker/16.png");
+}
+
 .Footer {
   background: url("../images/body.jpg") no-repeat center/cover;
   background: rgba(17, 17, 17, 0.35);
@@ -1277,5 +1436,39 @@ body {
             flex: 1;
     height: 100%;
   }
+}
+
+.Stats {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: rgba(17, 17, 17, 0.75);
+  padding: 45px;
+  color: #fff;
+  text-align: right;
+  counter-reset: Stats;
+  border-collapse: collapse;
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  opacity: 0.65;
+}
+
+.Stats tr th {
+  background: #004850;
+  color: #fff;
+  font-weight: 300;
+  padding: 5px;
+}
+
+.Stats tr td {
+  padding: 2px 5px;
+}
+
+.Stats tr td:first-child:after {
+  counter-increment: Stats;
+  content: counter(Stats);
 }
 /*# sourceMappingURL=style.css.map */
