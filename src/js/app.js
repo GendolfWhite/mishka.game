@@ -57,13 +57,10 @@ const randColor = () => {
 const isMobile = (window.outerWidth > 768 ? false : true);
 
 const mobileViewbox = (clear = false) => {
-	// return;
 	if (!isMobile) return;
 	document.querySelector(`body`).style.maxHeight = (clear ? '' : window.innerHeight + `px`);
 	document.querySelector(`body`).style.minHeight = (clear ? '' : window.innerHeight + `px`);
 	document.querySelector(`body`).style.height = (clear ? '' : window.innerHeight + `px`);
-	// console.log(window);
-	// console.log(window.outerHeight);
 }
 
 window.addEventListener(`resize`, () => {
@@ -140,12 +137,8 @@ window.addEventListener(`load`, () => {
 			this.#aT = document.createElement('table');
 			this.#aT.classList.add('Stats');
 			this.#aT.setAttribute(`id`, `adminTable`);
-			// let div = document.createElement('div');
 			this.#aT.innerHTML = `<thead><tr><th>#</th><th>name</th><th>gen</th><th>count</th><th>proportion</th></tr></thead><tbody></tbody><tfoot></tfoot>`;
 			document.querySelector(`[data-game-panel='results']`).after(this.#aT);
-			// document.querySelector(`body`).append(div);
-			// this.#aT = document.querySelector(`#adminTable`);
-			// this.#aT.style.display = `none`;
 		}
 
 		#setData(data) {
@@ -279,6 +272,10 @@ window.addEventListener(`load`, () => {
 		setCount(type, count) {
 			this.#setCurrentType(type);
 			this.#setCount(count);
+		}
+
+		minusCount() {
+			this.#itemCount--;
 		}
 
 		#addGennerate() {
@@ -465,7 +462,7 @@ window.addEventListener(`load`, () => {
 				alert('Ошибка при загрузке');
 			}
 			let data = await response.json();
-			// console.log(data);
+
 			this.#results = data;
 			this.#genResults();
 		}
@@ -512,7 +509,6 @@ window.addEventListener(`load`, () => {
 			tr.setAttribute('data-id', id);
 			tr.setAttribute('data-date', date);
 			tr.append(this.#genTd());
-			// tr.append(this.#genTd(date));
 			tr.append(this.#genTd(instagram));
 			tr.append(this.#genTd(score));
 			return tr;
@@ -715,15 +711,7 @@ window.addEventListener(`load`, () => {
 		}
 
 		#genItem() {
-			if (this.#maxItemCountOnField < this.#stats.getItemCount())
-				this.#removeOldItems();
 			return this.#item.getItem(this.#getTypeItem());
-		}
-
-		#updateStats() {
-			for (const type of this.#item.getTypes()) {
-				this.#stats.setCount(type, this.#panels.field.querySelectorAll(`[data-type='${type}']:not(.old)`).length);
-			}
 		}
 
 		#removeOldItems() {
@@ -731,11 +719,11 @@ window.addEventListener(`load`, () => {
 			for (const item of this.#panels.field.querySelectorAll(`*`)) {
 				if (i > 0) {
 					item.classList.add('old');
+					this.#stats.minusCount();
 					this.#addBonus(item, true);
 				}
 				i--;
 			}
-			this.#updateStats();
 		}
 
 		#addMoreItems(start = false) {
@@ -746,6 +734,10 @@ window.addEventListener(`load`, () => {
 					setTimeout(() => {
 						item.classList.remove(`new`);
 					}, 50);
+					if (this.#maxItemCountOnField < this.#stats.getItemCount()) {
+						this.#removeOldItems();
+					}
+
 				}, this.#randInt(150, 1500));
 			}
 		}
@@ -763,8 +755,10 @@ window.addEventListener(`load`, () => {
 
 		#autoClearClicked() {
 			this.#intervalIds.autoClear = setInterval(() => {
-				for (const item of this.#panels.field.querySelectorAll(`.clicked`))
+				for (const item of this.#panels.field.querySelectorAll(`.clicked`)) {
+					this.#stats.minusCount();
 					item.remove();
+				}
 			}, 2000);
 		}
 
