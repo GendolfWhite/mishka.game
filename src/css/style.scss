@@ -273,6 +273,7 @@ body {
 	}
 	// .Head__phone
 	&__phone {
+		display: none;
 		margin-right: 0px;
 		a {
 			color: #fff;
@@ -452,7 +453,7 @@ body {
 			border-left: 5px solid $purple;
 			margin-bottom: 0;
 			// font-weight: 400;
-			font-size: 40px;
+			font-size: clamp(24px, 10vw, 40px);
 			line-height: 1;
 			padding: 4px 0px;
 			padding-left: 15px;
@@ -460,11 +461,11 @@ body {
 		}
 		h2 {
 			padding: 4px 0px;
-
 			border-left: 5px solid $green;
 			padding-left: 15px;
 			font-weight: 300;
 			font-size: 24px;
+			font-size: clamp(16px, 6vw, 24px);
 			line-height: 1;
 		}
 		&.hide {
@@ -958,7 +959,7 @@ body {
 	position: relative;
 	margin: 0px auto;
 	@media (max-width: 325px) {
-		width: 40vw;
+		width: 30vw;
 	}
 	&::after {
 		opacity: 1;

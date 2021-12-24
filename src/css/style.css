@@ -361,6 +361,7 @@ body {
 }
 
 .Head__phone {
+  display: none;
   margin-right: 0px;
 }
 
@@ -586,7 +587,7 @@ body {
 .Game__start h1 {
   border-left: 5px solid #790f99;
   margin-bottom: 0;
-  font-size: 40px;
+  font-size: clamp(24px, 10vw, 40px);
   line-height: 1;
   padding: 4px 0px;
   padding-left: 15px;
@@ -599,6 +600,7 @@ body {
   padding-left: 15px;
   font-weight: 300;
   font-size: 24px;
+  font-size: clamp(16px, 6vw, 24px);
   line-height: 1;
 }
 
@@ -1189,7 +1191,7 @@ body {
 
 @media (max-width: 325px) {
   .aniLogo {
-    width: 40vw;
+    width: 30vw;
   }
 }
 

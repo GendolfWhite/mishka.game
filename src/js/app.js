@@ -600,8 +600,9 @@ window.addEventListener(`load`, () => {
 			this.#timer();
 			this.#autoAdd();
 			this.#autoClearClicked();
-			if (test)
-				this.#autoClick();
+			if (test) {
+				// this.#autoClick();
+			}
 
 			this.status = 'play';
 		}
