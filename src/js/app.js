@@ -637,7 +637,9 @@ window.addEventListener(`load`, () => {
 			});
 
 			this.#panels.field.addEventListener(`click`, (e) => {
-				this.#addBonus(e.target);
+				// console.log(e);
+				if (e.isTrusted)
+					this.#addBonus(e.target);
 				this.#refreshScore();
 			});
 
@@ -823,6 +825,7 @@ window.addEventListener(`load`, () => {
 				}
 			}, 500);
 		}
+
 
 		#setGameResult() {
 			this.#panels.end.querySelector(`b`).innerText = this.#score;
