@@ -1130,7 +1130,7 @@ body {
 }
 
 .Stats {
-	position: fixed;
+	// position: fixed;
 	top: 0;
 	right: 0;
 	background: rgba(#111111, 0.75);
@@ -1141,7 +1141,9 @@ body {
 	border-collapse: collapse;
 	pointer-events: none;
 	user-select: none;
+	max-width: 100vw;
 	opacity: 0.65;
+	width: 100%;
 	tr {
 		th {
 			background: $green;
@@ -1150,13 +1152,14 @@ body {
 			padding: 5px;
 		}
 		td {
-			padding: 2px 5px;
+			padding: 3px 5px;
 			&:first-child {
 				&:after {
 					counter-increment: Stats;
 					content: counter(Stats);
 				}
 			}
+			border: 1px solid rgba($white, 0.15);
 		}
 	}
 }

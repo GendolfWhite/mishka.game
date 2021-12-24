@@ -129,18 +129,23 @@ window.addEventListener(`load`, () => {
 		#data = {};
 		constructor(show = true, data = {}) {
 			this.#create();
+			this.hide();
 			if (show) {
 				this.#setData(data);
 				this.#generateTable();
-				this.#aT.hidden = 0;
 			}
 		}
 
 		#create() {
-			let div = document.createElement('div');
-			div.innerHTML = `<table class="Stats" id='adminTable' hidden><thead><tr><th>#</th><th>name</th><th>gen</th><th>count</th><th>proportion</th></tr></thead><tbody></tbody><tfoot></tfoot></table>`;
-			document.querySelector(`body`).append(div);
-			this.#aT = document.querySelector(`#adminTable`);
+			this.#aT = document.createElement('table');
+			this.#aT.classList.add('Stats');
+			this.#aT.setAttribute(`id`, `adminTable`);
+			// let div = document.createElement('div');
+			this.#aT.innerHTML = `<thead><tr><th>#</th><th>name</th><th>gen</th><th>count</th><th>proportion</th></tr></thead><tbody></tbody><tfoot></tfoot>`;
+			document.querySelector(`[data-game-panel='results']`).after(this.#aT);
+			// document.querySelector(`body`).append(div);
+			// this.#aT = document.querySelector(`#adminTable`);
+			// this.#aT.style.display = `none`;
 		}
 
 		#setData(data) {
@@ -184,7 +189,12 @@ window.addEventListener(`load`, () => {
 		}
 
 		draw(data) {
+			if (!test) {
+				this.hide();
+				return;
+			};
 			this.#setData(data);
+			this.show();
 			this.#adminTableVal(`itemCount`, this.#data.itemCount);
 			this.#adminTableVal(`itemGennerate`, this.#data.itemGennerate);
 			for (const type in this.#data.typeProportion) {
@@ -192,6 +202,12 @@ window.addEventListener(`load`, () => {
 				this.#adminTableVal(`${type}_count`, this.#data.typeCount[type].current);
 				this.#adminTableVal(`${type}_proportion`, this.#data.typeProportion[type]);
 			}
+		}
+		hide() {
+			this.#aT.hidden = 1;
+		}
+		show() {
+			this.#aT.hidden = 0;
 		}
 	}
 
@@ -284,6 +300,7 @@ window.addEventListener(`load`, () => {
 			this.#typeProportion = {};
 			this.#typeCount = {};
 			this.#createTypeStats();
+			this.table.hide();
 		}
 	}
 
@@ -431,15 +448,100 @@ window.addEventListener(`load`, () => {
 		}
 	}
 
+	class GameResult {
+		#results = null;
+		#form = null;
+		#table = null;
+		constructor(table, form) {
+			this.#table = table;
+			this.#form = form;
+		}
+
+		async #loadResults() {
+			let response = null;
+			try {
+				response = await fetch('https://gfwe.ru/mishkabar/game/');
+			} catch (error) {
+				alert('Ошибка при загрузке');
+			}
+			let data = await response.json();
+			// console.log(data);
+			this.#results = data;
+			this.#genResults();
+		}
+
+		load() {
+			this.#loadResults();
+		}
+
+		async save() {
+			const fd = new FormData(this.#form);
+			Cookie.set('score', fd.get(`score`));
+			Cookie.set('instagram', fd.get(`instagram`));
+			this.#form.reset();
+
+			let response = null;
+			try {
+				response = await fetch('https://gfwe.ru/mishkabar/game/', {
+					method: 'POST',
+					body: fd
+				});
+			} catch (error) {
+				alert('Ошибка при загрузке');
+			}
+			let result = await response.json();
+			console.log(result);
+
+			if (result.status) {
+				// this.#openResults();
+				this.#loadResults();
+			} else {
+				alert(`Произошла ошибка при сохранении: (`);
+			}
+		}
+
+		#genTd(text = '') {
+			let td = document.createElement('td');
+			td.innerText = text;
+			return td;
+		}
+
+		#genTr(id, date, instagram, score) {
+			let tr = document.createElement('tr');
+			if (Cookie.get('instagram') == instagram)
+				tr.classList.add('you');
+			tr.setAttribute('data-id', id);
+			tr.setAttribute('data-date', date);
+			tr.append(this.#genTd());
+			// tr.append(this.#genTd(date));
+			tr.append(this.#genTd(instagram));
+			tr.append(this.#genTd(score));
+			return tr;
+		}
+
+		#clearResults() {
+			this.#table.innerHTML = '';
+		}
+
+		#genResults() {
+			this.#clearResults();
+			for (const res of this.#results) {
+				this.#table.append(this.#genTr(res.id, res.date, res.instagram, res.score));
+			}
+		}
+	}
+
 	class Game {
+		status = 'stop';
 		#item = null;
 		#stats = null;
-		#results = null;
+		#result = null;
 		#panels = {};
 		#intervalIds = {
 			autoAdd: null,
 			autoClear: null,
 			timer: null,
+			autoClick: null,
 		};
 
 		#addItemCount = 10; // кол-во итемов для добавления в тик по умолчанию
@@ -469,11 +571,105 @@ window.addEventListener(`load`, () => {
 		constructor(gameDuration = false) {
 			if (gameDuration)
 				this.#gameDuration = gameDuration;
-			this.#loadElements();
+			this.#loadPanels();
 			this.#events();
 
 			this.#item = new GameItem;
 			this.#stats = new GameStats(this.#item.getTypes());
+			this.#result = new GameResult(this.#panels.tbody, this.#panels.form);
+		}
+
+		#loadPanels() {
+			for (const el of document.querySelectorAll(`[data-game-panel]`)) {
+				this.#panels[el.getAttribute(`data-game-panel`)] = el;
+			}
+		}
+
+		start() {
+			this.#clearField();
+			this.#clearScore();
+			this.#togglePanels({
+				'bttns': 0,
+				'timer': 1,
+				'info': 1,
+				'field': 1,
+				'start': 0,
+				'end': 0,
+			});
+			this.#addMoreItems(true);
+			this.#timer();
+			this.#autoAdd();
+			this.#autoClearClicked();
+			if (test)
+				this.#autoClick();
+
+			this.status = 'play';
+		}
+
+		stop() {
+			this.#stopIntervals();
+			this.#clearField();
+			this.#togglePanels({
+				'bttns': 1,
+				'timer': 0,
+				'info': 0,
+				'field': 0,
+				'start': 0,
+				'bttnSave': 1,
+				'bttnStart': 0,
+				'bttnRestart': 1,
+			});
+			this.#stats.clearStats(1);
+			this.#setGameResult();
+			this.#togglePanels({ 'end': 1 });
+			this.status = 'stop';
+		}
+
+		#events() {
+			this.#panels.bttnRestart.addEventListener(`click`, (e) => {
+				e.preventDefault();
+				this.start();
+			});
+			this.#panels.bttnStart.addEventListener(`click`, (e) => {
+				e.preventDefault();
+				this.start();
+				toggleFullScreen();
+			});
+
+			this.#panels.field.addEventListener(`click`, (e) => {
+				this.#addBonus(e.target);
+				this.#refreshScore();
+			});
+
+			this.#panels.form.addEventListener(`submit`, (e) => {
+				e.preventDefault();
+				this.#result.save();
+				this.#openResults();
+			});
+
+			this.#panels.bttnResults.addEventListener(`click`, (e) => {
+				e.preventDefault();
+				this.#openResults();
+			});
+
+			this.#panels.results.querySelector(`.Bttn`).addEventListener(`click`, (e) => {
+				e.preventDefault();
+				this.#togglePanels({ 'results': 0 });
+			});
+
+			window.addEventListener(`keypress`, (e) => {
+				console.log(e.keyCode);
+				if (e.keyCode == 116)
+					test = !test;
+				if (e.keyCode == 99)
+					console.log(Cookie.list());
+				if (e.keyCode == 115) {
+					if (this.status == 'play')
+						this.stop();
+					else
+						this.start();
+				}
+			});
 		}
 
 		#randInt(min, max, float = false) {
@@ -609,66 +805,19 @@ window.addEventListener(`load`, () => {
 			this.#panels.info.querySelector(`b`).innerText = this.#score;
 		}
 
-		start() {
-			this.#clearField();
-			this.#clearScore();
-			this.#togglePanels({
-				'bttns': 0,
-				'timer': 1,
-				'info': 1,
-				'field': 1,
-				'start': 0,
-				'end': 0,
-			});
-
-			this.#addMoreItems(true);
-			this.#timer();
-			this.#autoAdd();
-			this.#autoClearClicked();
+		#autoClick() {
+			this.#intervalIds.autoClick = setInterval(() => {
+				for (const el of this.#panels.field.querySelectorAll(`*`)) {
+					el.click();
+				}
+			}, 500);
 		}
 
-		stop() {
-			this.#stopIntervals();
-			this.#clearField();
-			this.#togglePanels({
-				'bttns': 1,
-				'timer': 0,
-				'info': 0,
-				'field': 0,
-				'start': 0,
-				'bttnSave': 1,
-				'bttnStart': 0,
-				'bttnRestart': 1,
-			});
-
-			this.#stats.clearStats(1);
-
-			this.#setEndResult();
-			this.#togglePanels({ 'end': 1 });
-		}
-
-		#setEndResult() {
+		#setGameResult() {
 			this.#panels.end.querySelector(`b`).innerText = this.#score;
 			this.#panels.end.querySelector(`input[name='score']`).value = this.#score;
 			if (Cookie.get('instagram') != undefined)
 				this.#panels.end.querySelector(`input[name='instagram']`).value = Cookie.get('instagram');
-		}
-
-		#loadElements() {
-			this.#panels.field = document.querySelector(`.Game__field`);
-			this.#panels.bttns = document.querySelector(`.Game__bttns`);
-			this.#panels.info = document.querySelector(`.Game__info`);
-			this.#panels.timer = document.querySelector(`.Game__timer`);
-			this.#panels.start = document.querySelector(`.Game__start`);
-			this.#panels.end = document.querySelector(`.Game__end`);
-			this.#panels.bttnSave = document.querySelector(`.Game__bttn--save`);
-			this.#panels.bttnRestart = document.querySelector(`.Game__bttn--restart`);
-			this.#panels.bttnStart = document.querySelector(`.Game__bttn--start`);
-			this.#panels.bttnResults = document.querySelector(`.Game__bttn--results`);
-			this.#panels.form = document.querySelector(`.Game__save`);
-			this.#panels.results = document.querySelector(`.Game__results`);
-			this.#panels.results = document.querySelector(`.Game__results`);
-			this.#panels.tbody = this.#panels.results.querySelector('tbody');
 		}
 
 		#addBonus(item, noBonus = false) {
@@ -678,150 +827,16 @@ window.addEventListener(`load`, () => {
 			}
 		}
 
-		async #loadResults() {
-			let response = null;
-			try {
-				response = await fetch('https://gfwe.ru/mishkabar/game/');
-			} catch (error) {
-				alert('Ошибка при загрузке');
-			}
-			let data = await response.json();
-			// console.log(data);
-			this.#results = data;
-			this.#genResults();
-		}
-
-		#genTd(text = '') {
-			let td = document.createElement('td');
-			td.innerText = text;
-			return td;
-		}
-
-		#genTr(id, date, instagram, score) {
-			let tr = document.createElement('tr');
-			if (Cookie.get('instagram') == instagram)
-				tr.classList.add('you');
-			tr.setAttribute('data-id', id);
-			tr.setAttribute('data-date', date);
-			tr.append(this.#genTd());
-			// tr.append(this.#genTd(date));
-			tr.append(this.#genTd(instagram));
-			tr.append(this.#genTd(score));
-			return tr;
-		}
-
-		#clearResults() {
-			this.#panels.tbody.innerHTML = '';
-		}
-
-		#genResults() {
-			this.#clearResults();
-			for (const res of this.#results) {
-				this.#panels.tbody.append(this.#genTr(res.id, res.date, res.instagram, res.score));
-			}
-		}
-
 		#openResults(openEnd = false) {
+			this.#result.load();
 			if (!openEnd) {
 				this.#togglePanels({ 'start': 1, 'end': 0 });
 			}
 			this.#togglePanels({ 'results': 1 });
-			this.#loadResults();
 		}
 
-		async #saveResult() {
-			const fd = new FormData(this.#panels.form);
-			Cookie.set('score', fd.get(`score`));
-			Cookie.set('instagram', fd.get(`instagram`));
-			this.#panels.form.reset();
-
-			let response = null;
-			try {
-				response = await fetch('https://gfwe.ru/mishkabar/game/', {
-					method: 'POST',
-					body: fd
-				});
-			} catch (error) {
-				alert('Ошибка при загрузке');
-			}
-			let result = await response.json();
-			console.log(result);
-
-			if (result.status) {
-				this.#openResults();
-			} else {
-				alert(`Произошла ошибка при сохранении: (`);
-			}
-		}
-
-		#events() {
-			this.#panels.bttnRestart.addEventListener(`click`, (e) => {
-				e.preventDefault();
-				this.start();
-			});
-			this.#panels.bttnStart.addEventListener(`click`, (e) => {
-				e.preventDefault();
-				this.start();
-				toggleFullScreen();
-			});
-
-			this.#panels.field.addEventListener(`click`, (e) => {
-				this.#addBonus(e.target);
-				this.#refreshScore();
-			});
-
-			this.#panels.form.addEventListener(`submit`, (e) => {
-				e.preventDefault();
-				this.#saveResult();
-			});
-
-			this.#panels.bttnResults.addEventListener(`click`, (e) => {
-				e.preventDefault();
-				this.#openResults();
-			});
-
-			this.#panels.results.querySelector(`.Bttn`).addEventListener(`click`, (e) => {
-				e.preventDefault();
-				this.#togglePanels({ 'results': 0 });
-			});
-		}
 	}
 
-	const game = new Game(90);
+	new Game(90);
 
-	window.addEventListener(`keypress`, function (e) {
-		// console.log(e);
-		if (e.keyCode == 116)
-			test = !test;
-		if (e.keyCode == 99)
-			console.log(Cookie.list());
-		if (e.keyCode == 115 && test) {
-			game.stop();
-			game.start();
-		}
-	});
-
-	const animatePoint = (count) => {
-		for (let index = 0; index < 100; index = index + (100 / count)) {
-			console.log(Math.ceil(index));
-		}
-	}
-
-	// function autoClick() {
-	// 	let id = setInterval(() => {
-	// 		for (const el of document.querySelectorAll(`.Game__item `)) {
-	// 			el.click();
-	// 		}
-	// 	}, 500);
-	// 	setTimeout(() => {
-	// 		clearInterval(id)
-	// 	}, 90 * 1000);
-	// }
-	// autoClick();
-	// console.log(window.screen);
-
-	// alert(window.innerHeight);
-	// alert(window.outerHeight);
-	// alert(window.screen.availHeight);
-	// alert(window.screen.height);
 });

@@ -61,10 +61,7 @@
 	favicon/favicon-310.png">
 
 	<link rel="stylesheet" href="/css/style.css?ver=<?= filemtime(__DIR__ . '/css/style.css') ?>">
-	<script type='module' src='/js/oldGame.js?ver=<?= filemtime(__DIR__ . '/js/oldGame.js') ?>'></script>
-	<script type='module' src='/js/Game.js?ver=<?= filemtime(__DIR__ . '/js/Game.js') ?>'></script>
-	<script type='module' src='/js/GameItem.js?ver=<?= filemtime(__DIR__ . '/js/GameItem.js') ?>'></script>
-	<script type='module' src="/js/app.js?ver=<?= filemtime(__DIR__ . '/js/app.js') ?>"></script>
+	<script src="/js/app.js?ver=<?= filemtime(__DIR__ . '/js/app.js') ?>"></script>
 </head>
 
 <body class="Preloader flex flex--fdc flex--aic flex--jcs">
@@ -108,9 +105,9 @@
 		<div class="Game__onlyMobile flex flex--aic flex--jcc">
 			<h2>Как жаль что это приложение разработано только для мобильных устройств....</h2>
 		</div>
-		<section class="Game__info flex flex--aic flex--jcc hide">Ваш счет: <b>0</b></section>
-		<section class="Game__field hide"></section>
-		<section class="Game__start flex flex--fdc flex--aic flex--jcc flex--fwn">
+		<section class="Game__info flex flex--aic flex--jcc hide" data-game-panel='info'>Ваш счет: <b>0</b></section>
+		<section class="Game__field hide" data-game-panel='field'></section>
+		<section class="Game__start flex flex--fdc flex--aic flex--jcc flex--fwn" data-game-panel='start'>
 			<div>
 				<div class="startBox startBox--show" id='startText'>
 					<div class="aniLogo"></div>
@@ -147,28 +144,28 @@
 				</div>
 			</div>
 		</section>
-		<section class="Game__end wrap hide flex flex--fdc flex--aic flex--jcc">
+		<section class="Game__end wrap hide flex flex--fdc flex--aic flex--jcc" data-game-panel='end'>
 			<p style='text-align: center;'>
 				Ух ты! Вот это результат!!<br>
 				У тебя <b>10</b> баллов!<br>
 				Такому результату позавидовал бы даже сам Чак Норрис!<br><br>
 			</p>
 			<span>Введи свой адрес странички в инстаграм что бы мы сохранили твой результат в списке игроков :)</span>
-			<form class="Game__save" id="save">
+			<form class="Game__save" id="save" data-game-panel='form'>
 				<input type="hidden" name='score'>
 				<input type="text" name='instagram' placeholder="логин или ссылка" required minlength="4">
 			</form>
 		</section>
-		<section class="Game__bttns flex flex--aic flex--jcc">
-			<button form="save" class="Game__bttn Game__bttn--save hide">Сохранить</button>
-			<a href="#" class="Game__bttn Game__bttn--start">Начать игру</a>
-			<a href="#" class="Game__bttn Game__bttn--start Game__bttn--restart hide">Заново</a>
-			<a href="#" class="Game__bttn Game__bttn--results">Результаты</a>
+		<section class="Game__bttns flex flex--aic flex--jcc" data-game-panel='bttns'>
+			<button form="save" class="Game__bttn Game__bttn--save hide" data-game-panel='bttnSave'>Сохранить</button>
+			<a href="#" class="Game__bttn Game__bttn--start" data-game-panel='bttnStart'>Начать игру</a>
+			<a href="#" class="Game__bttn Game__bttn--start Game__bttn--restart hide" data-game-panel='bttnRestart'>Заново</a>
+			<a href="#" class="Game__bttn Game__bttn--results" data-game-panel='bttnResults'>Результаты</a>
 		</section>
-		<section class="Game__timer flex flex--aic flex--jcc hide">
+		<section class="Game__timer flex flex--aic flex--jcc hide" data-game-panel='timer'>
 			<b></b>
 		</section>
-		<section class="Game__results hide">
+		<section class="Game__results hide" data-game-panel='results'>
 			<h2>Результаты [ТОП 100]</h2>
 			<table>
 				<thead>
@@ -179,7 +176,7 @@
 						<th>Счет</th>
 					</tr>
 				</thead>
-				<tbody></tbody>
+				<tbody data-game-panel='tbody'></tbody>
 			</table>
 			<a href="#" class="Bttn Game__bttn--results">Закрыть</a>
 		</section>
