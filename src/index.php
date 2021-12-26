@@ -65,7 +65,7 @@
 </head>
 
 <body class="Preloader flex flex--fdc flex--aic flex--jcs">
-	<div href="/" class="Logotype Preloader__logotype flex flex--aic flex--jcc"><img src="/images/logotypeIco.png" alt="" class="Logotype__icon"><img src="/images/logotypeText.png" alt="" class="Logotype__text"></div>
+	<div class="Logotype Preloader__logotype flex flex--aic flex--jcc"><img src="/images/logotypeIco.png" alt="" class="Logotype__icon"><img src="/images/logotypeText.png" alt="" class="Logotype__text"></div>
 	<header class="Head">
 		<div class="Head__wrap wrap flex flex--aic flex--jcc">
 			<a href="/" class="Head__logotype Logotype flex flex--aic flex--jcc" title="МишкаБар">
@@ -105,9 +105,9 @@
 		<div class="Game__onlyMobile flex flex--aic flex--jcc">
 			<h2>Как жаль что это приложение разработано только для мобильных устройств....</h2>
 		</div>
-		<section class="Game__info flex flex--aic flex--jcc hide" data-game-panel='info'>Ваш счет: <b>0</b></section>
-		<section class="Game__field hide" data-game-panel='field'></section>
-		<section class="Game__start flex flex--fdc flex--aic flex--jcc flex--fwn" data-game-panel='start'>
+		<div class="Game__info flex flex--aic flex--jcc hide" data-game-panel='info'>Ваш счет: <b>0</b></div>
+		<div class="Game__field hide" data-game-panel='field'></div>
+		<div class="Game__start flex flex--fdc flex--aic flex--jcc flex--fwn" data-game-panel='start'>
 			<div>
 				<div class="startBox startBox--show" id='startText'>
 					<div class="aniLogo"></div>
@@ -140,11 +140,11 @@
 					</div>
 					<p>В новогоднюю ночь мы подведем итоги и вручим памятные призы топ-5 результатам :)</p>
 					<a href="#" class="startBox__toggler Bttn">
-						<< Назад</a>
+						« Назад</a>
 				</div>
 			</div>
-		</section>
-		<section class="Game__end wrap hide flex flex--fdc flex--aic flex--jcc" data-game-panel='end'>
+		</div>
+		<div class="Game__end wrap hide flex flex--fdc flex--aic flex--jcc" data-game-panel='end'>
 			<p style='text-align: center;'>
 				Ух ты! Вот это результат!!<br>
 				У тебя <b>10</b> баллов!<br>
@@ -155,17 +155,17 @@
 				<input type="hidden" name='score'>
 				<input type="text" name='instagram' placeholder="логин или ссылка" required minlength="4">
 			</form>
-		</section>
-		<section class="Game__bttns flex flex--aic flex--jcc" data-game-panel='bttns'>
+		</div>
+		<div class="Game__bttns flex flex--aic flex--jcc" data-game-panel='bttns'>
 			<button form="save" class="Game__bttn Game__bttn--save hide" data-game-panel='bttnSave'>Сохранить</button>
 			<a href="#" class="Game__bttn Game__bttn--start" data-game-panel='bttnStart'>Начать игру</a>
 			<a href="#" class="Game__bttn Game__bttn--start Game__bttn--restart hide" data-game-panel='bttnRestart'>Заново</a>
 			<a href="#" class="Game__bttn Game__bttn--results" data-game-panel='bttnResults'>Результаты</a>
-		</section>
-		<section class="Game__timer flex flex--aic flex--jcc hide" data-game-panel='timer'>
+		</div>
+		<div class="Game__timer flex flex--aic flex--jcc hide" data-game-panel='timer'>
 			<b></b>
-		</section>
-		<section class="Game__results hide" data-game-panel='results'>
+		</div>
+		<div class="Game__results hide" data-game-panel='results'>
 			<h2>Результаты [ТОП 100]</h2>
 			<table>
 				<thead>
@@ -179,7 +179,7 @@
 				<tbody data-game-panel='tbody'></tbody>
 			</table>
 			<a href="#" class="Bttn Game__bttn--results">Закрыть</a>
-		</section>
+		</div>
 	</main>
 	<footer class="Footer">
 		<div class="Footer__wrap wrap flex flex--aistr flex--jcc">
@@ -188,7 +188,7 @@
 		</div>
 	</footer>
 	<!-- Yandex.Metrika counter -->
-	<script type="text/javascript">
+	<script>
 		(function(m, e, t, r, i, k, a) {
 			m[i] = m[i] || function() {
 				(m[i].a = m[i].a || []).push(arguments)
