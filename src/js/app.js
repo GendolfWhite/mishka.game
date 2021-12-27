@@ -1,48 +1,10 @@
 "use strict";
-if ("serviceWorker" in navigator) {
-	self.addEventListener("load", async () => {
-		const container = navigator.serviceWorker;
-		if (container.controller === null) {
-			const reg = await container.register("sw.js");
-		}
-	});
-}
-// console.log(navigator);
-const Cookie = {
-	set: function (name, value, options = {}) {
-		options = { path: '/', ...options };
-		if (options.day != undefined) {
-			options.expires = (new Date(Date.now() + (options.day * 24 * 60 * 60 * 1000))).toUTCString();
-		} else {
-			if (options.expires instanceof Date) options.expires = options.expires.toUTCString();
-		}
+import * as Functions from "./modules/functions.js"
 
-		let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+Functions.isWebp();
+Functions.ServiceWorker();
 
-		for (let optionKey in options) {
-			updatedCookie += "; " + optionKey;
-			let optionValue = options[optionKey];
-			if (optionValue !== true) updatedCookie += "=" + optionValue;
-		}
-
-		document.cookie = updatedCookie;
-	},
-	remove: function (name) {
-		this.set(name, '', { 'max-age': -1 });
-	},
-	get: function (name) {
-		let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-		return matches ? decodeURIComponent(matches[1]) : undefined;
-	},
-	list: function () {
-		let cookie = {};
-		for (let item of document.cookie.split('; ')) {
-			item = item.split('=');
-			cookie[item[0]] = item[1];
-		}
-		return cookie;
-	},
-};
+const Cookie = Functions.Cookie;
 
 let test = false;
 const testDuration = 1;
